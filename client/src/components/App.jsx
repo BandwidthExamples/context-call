@@ -4,7 +4,8 @@ import {
   Button,
   Flow,
   Form,
-  Input
+  Input,
+  Label
 } from '@bandwidth/shared-components';
 
 class App extends React.Component {
@@ -12,62 +13,51 @@ class App extends React.Component {
   constructor() {
     super();
     this.state = {
-      textState: {
-        phoneNumber: '',
-        message: ''
-      },
-      callState: {
-        phoneNumber: ''
-      }
+      companyNumber: '',
+      customerNumber: '',
+      message: ''
     };
 
-    this.onTextNumberChange = this.onTextNumberChange.bind(this);
+    this.onCompanyNumberChange = this.onCompanyNumberChange.bind(this);
+    this.onCustomerNumberChange = this.onCustomerNumberChange.bind(this);
     this.onTextMessageChange = this.onTextMessageChange.bind(this);
-    this.onCallNumberChange = this.onCallNumberChange.bind(this);
     this.onTextSubmit = this.onTextSubmit.bind(this);
-    this.onCallSubmit = this.onCallSubmit.bind(this);
   }
 
-  onTextNumberChange(event) {
+  onCompanyNumberChange(event) {
     const number = event.target.value;
     this.setState({
-      textState: {
-        ...this.state.textState,
-        phoneNumber: number,
-        validNumber: number.match(new RegExp('^[+]?[0-9]{11}$'))
-      }
+      ...this.state,
+      companyNumber: number,
+      validCompanyNumber: number.match(new RegExp('^[+][0-9]{11}$'))
+    });
+  }
+
+  onCustomerNumberChange(event) {
+    const number = event.target.value;
+    this.setState({
+      ...this.state,
+      customerNumber: number,
+      validCustomerNumber: number.match(new RegExp('^[+][0-9]{11}$'))
     });
   }
 
   onTextMessageChange(event) {
     const msg = event.target.value;
     this.setState({
-      textState: {
-        ...this.state.textState,
-        message: msg,
-        validMessage: msg.length > 0
-      }
-    });
-  }
-
-  onCallNumberChange(event) {
-    const number = event.target.value;
-    this.setState({
-      callState: {
-        ...this.state.callState,
-        phoneNumber: number,
-        validNumber: number.match(new RegExp('^[+]?[0-9]{11}$'))
-      }
+      ...this.state,
+      message: msg,
+      validMessage: msg.length > 0
     });
   }
 
   onTextSubmit(event) {
     event.preventDefault();
     const data = {
-      number: this.state.textState.phoneNumber,
-      message: this.state.textState.message
+      companyNumber: this.state.companyNumber,
+      customerNumber: this.state.customerNumber,
+      message: this.state.message
     };
-    // url: 'http://my-req-bin.herokuapp.com/1lwq6nl1',
     $.ajax({
       type: 'POST',
       url: 'https://jxguino42f.execute-api.us-west-2.amazonaws.com/prod/NodeJS-random-number-generator',
@@ -80,20 +70,6 @@ class App extends React.Component {
     });
   }
 
-  onCallSubmit(event) {
-    event.preventDefault();
-    const data = JSON.stringify({
-      number: this.state.callState.phoneNumber
-    });
-    // url: 'http://my-req-bin.herokuapp.com/1lwq6nl1',
-    $.ajax({
-      type: 'POST',
-      url: 'https://jxguino42f.execute-api.us-west-2.amazonaws.com/prod/NodeJS-random-number-generator',
-      data: data,
-      dataType: 'json'
-    });
-  }
-
   render() {
     return (
       <div>
@@ -101,54 +77,60 @@ class App extends React.Component {
           <Flow>
             <Flow.Row>
               <Flow.Item>
-                <Input
-                  type="text"
-                  value={this.state.textState.phoneNumber}
-                  onChange={this.onTextNumberChange}
-                  placeholder="Phone Number"
-                />
+                <Label>
+                  Company Phone Number
+                </Label>
               </Flow.Item>
               <Flow.Item>
                 <Input
                   type="text"
-                  value={this.state.textState.message}
+                  value={this.state.companyNumber}
+                  onChange={this.onCompanyNumberChange}
+                  placeholder="Phone Number"
+                />
+              </Flow.Item>
+            </Flow.Row>
+            <Flow.Row>
+              <Flow.Item>
+                <Label>
+                  Customer Phone Number
+                </Label>
+              </Flow.Item>
+              <Flow.Item>
+                <Input
+                  type="text"
+                  value={this.state.customerNumber}
+                  onChange={this.onCustomerNumberChange}
+                  placeholder="Phone Number"
+                />
+              </Flow.Item>
+            </Flow.Row>
+            <Flow.Row>
+              <Flow.Item>
+                <Label>
+                  Text Message
+                </Label>
+              </Flow.Item>
+              <Flow.Item>
+                <Input
+                  type="text"
+                  value={this.state.message}
                   onChange={this.onTextMessageChange}
                   placeholder="Message"
                 />
               </Flow.Item>
+            </Flow.Row>
+            <Flow.Row>
               <Flow.Item>
                 <Button
                   onClick={this.onTextSubmit}
                   disabled={
-                    !this.state.textState.validNumber ||
-                    !this.state.textState.validMessage
+                    !this.state.validCompanyNumber ||
+                    !this.state.validCustomerNumber ||
+                    !this.state.validMessage
                   }
                 >
                   Text
-                </Button>
-              </Flow.Item>
-            </Flow.Row>
-          </Flow>
-        </Form>
-        <Form>
-          <Flow>
-            <Flow.Row>
-              <Flow.Item>
-                <Input
-                  type="text"
-                  value={this.state.callState.phoneNumber}
-                  onChange={this.onCallNumberChange}
-                  placeholder="Phone Number"
-                />
-              </Flow.Item>
-              <Flow.Item>
-              </Flow.Item>
-              <Flow.Item>
-                <Button
-                  onClick={this.onCallSubmit}
-                  disabled={!this.state.callState.validNumber}
-                >
-                  Call
                 </Button>
               </Flow.Item>
             </Flow.Row>
