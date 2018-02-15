@@ -14,12 +14,33 @@ class App extends React.Component {
     super();
     this.state = {
       companyNumber: '',
-      customerNumber: '',
       message: ''
     };
 
+    this.customers = [
+      {
+        name: 'Customer A',
+        phone: '+19194755313'
+      },
+      {
+        name: 'Customer B',
+        phone: '+19194755313'
+      },
+      {
+        name: 'Customer C',
+        phone: '+19194755313'
+      },
+      {
+        name: 'Customer D',
+        phone: '+19194755313'
+      },
+      {
+        name: 'Customer E',
+        phone: '+19194755313'
+      }
+    ];
+
     this.onCompanyNumberChange = this.onCompanyNumberChange.bind(this);
-    this.onCustomerNumberChange = this.onCustomerNumberChange.bind(this);
     this.onTextMessageChange = this.onTextMessageChange.bind(this);
     this.onTextSubmit = this.onTextSubmit.bind(this);
   }
@@ -30,15 +51,6 @@ class App extends React.Component {
       ...this.state,
       companyNumber: number,
       validCompanyNumber: number.match(new RegExp('^[+][0-9]{11}$'))
-    });
-  }
-
-  onCustomerNumberChange(event) {
-    const number = event.target.value;
-    this.setState({
-      ...this.state,
-      customerNumber: number,
-      validCustomerNumber: number.match(new RegExp('^[+][0-9]{11}$'))
     });
   }
 
@@ -71,6 +83,28 @@ class App extends React.Component {
   }
 
   render() {
+    const customerList = this.customers.map(customer =>
+      <Flow.Row>
+        <Flow.Item>
+          <Label>{customer.name}</Label>
+        </Flow.Item>
+        <Flow.Item>
+          <Label>{customer.phone}</Label>
+        </Flow.Item>
+        <Flow.Item>
+          <Button
+            onClick={this.onTextSubmit}
+            disabled={
+              !this.state.validCompanyNumber ||
+              !this.state.validMessage
+            }
+          >
+            Text
+          </Button>
+        </Flow.Item>
+      </Flow.Row>
+    );
+
     return (
       <div>
         <Form>
@@ -93,21 +127,6 @@ class App extends React.Component {
             <Flow.Row>
               <Flow.Item>
                 <Label>
-                  Customer Phone Number
-                </Label>
-              </Flow.Item>
-              <Flow.Item>
-                <Input
-                  type="text"
-                  value={this.state.customerNumber}
-                  onChange={this.onCustomerNumberChange}
-                  placeholder="Phone Number"
-                />
-              </Flow.Item>
-            </Flow.Row>
-            <Flow.Row>
-              <Flow.Item>
-                <Label>
                   Text Message
                 </Label>
               </Flow.Item>
@@ -120,20 +139,7 @@ class App extends React.Component {
                 />
               </Flow.Item>
             </Flow.Row>
-            <Flow.Row>
-              <Flow.Item>
-                <Button
-                  onClick={this.onTextSubmit}
-                  disabled={
-                    !this.state.validCompanyNumber ||
-                    !this.state.validCustomerNumber ||
-                    !this.state.validMessage
-                  }
-                >
-                  Text
-                </Button>
-              </Flow.Item>
-            </Flow.Row>
+            {customerList}
           </Flow>
         </Form>
       </div>
