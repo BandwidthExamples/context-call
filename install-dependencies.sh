@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
-#install client dependencies
-cd client
+# install client dependencies
+cd ~/client
 npm install
-#install server dependencies
-cd ../server
+
+# install server dependencies
+cd ~/server
 npm install
-#restore initial working directory
+
+# restore initial working directory
 cd ..
