@@ -1,5 +1,5 @@
 language: node_js
 install: ./install-dependencies.sh
 script:
-# - jest server/
-# - cypress client/
+ - jest server/
+ - cypress client/
