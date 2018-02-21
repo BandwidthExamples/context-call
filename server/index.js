@@ -33,6 +33,24 @@ function call_number(client, number) {
 	});
 }
 exports.handler = (event, context, callback) => {
+	if(true) {
+		var AWS = require('aws-sdk');
+		var params = {
+			Name: 'Call NUMBER_HERE', /* required */
+			Description: 'Call NUMBER_HERE at TIME_HERE',
+			EventPattern: '',
+			RoleArn: '',
+			ScheduleExpression: 'cron(0,17,21,2,*,2018)',
+			State: "ENABLED"
+		};
+
+		var cloudwatchevents = new AWS.CloudWatchEvents({apiVersion: '2015-10-07'});
+		cloudwatchevents.putRule(params, function(err, data) {
+			if (err) console.log(err, err.stack); // an error occurred
+			else     console.log(data);           // successful response
+		});
+
+	}
 	console.log(process.env);
 	var Bandwidth_API = require("node-bandwidth");
 	var client = new Bandwidth_API({
