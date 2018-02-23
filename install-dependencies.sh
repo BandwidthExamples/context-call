@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 # install client dependencies
+cd ~/server
+npm cache clean
 cd ~/client
+npm cache clean
 npm install
-npm install jest-cli
 
 # install server dependencies
 cd ~/server
