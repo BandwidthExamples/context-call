@@ -2,7 +2,7 @@
 # install client dependencies
 cd ~/client
 npm install
-npm install jest
+npm install jest-cli
 
 # install server dependencies
 cd ~/server
