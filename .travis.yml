@@ -1,14 +1,5 @@
 language: node_js
-cache:
-  directories:
-    #Cache Client npm install files
-    - ~/client/.npm
-    - ~/client/node-modules
-
-    #Cache Server npm install files
-    - ~/server/.npm
-    - ~/server/node-modules
-
+before_install: npm cache clean
 install: ./install-dependencies.sh
 script:
   #Run jest unit tests on client
