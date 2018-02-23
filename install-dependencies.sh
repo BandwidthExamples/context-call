@@ -8,7 +8,6 @@ npm install
 
 # install server dependencies
 cd ~/server
-npm install
 npm install node-bandwidth
 
 # restore initial working directory
