@@ -1,12 +1,21 @@
 language: node_js
-before_install: npm cache clean
+cache:
+  directories:
+    #Cache Client npm install files
+    - ~/build/BandwidthExamples/context-call/client/.npm
+    - ~/build/BandwidthExamples/context-call/client/node-modules
+
+    #Cache Server npm install files
+    - ~/build/BandwidthExamples/context-call/server/.npm
+    - ~/build/BandwidthExamples/context-call/server/node-modules
+
 install: ./install-dependencies.sh
 script:
   #Run jest unit tests on client
   - cd ~/build/BandwidthExamples/context-call/client
   - jest
   #Run cypress tests on client
-#  - npm run cypress:run
+  - npm run cypress:run
   #Run jest unit tests on server
   - cd ~/build/BandwidthExamples/context-call/server
   - jest
