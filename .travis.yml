@@ -1,21 +1,21 @@
 language: node_js
-cache:
-  directories:
+#cache:
+ # directories:
     #Cache Client npm install files
-    - ~/client/.npm
-    - ~/client/node-modules
+ #   - ~/client/.npm
+ #   - ~/client/node-modules
 
     #Cache Server npm install files
-    - ~/server/.npm
-    - ~/server/node-modules
+ #   - ~/server/.npm
+ #   - ~/server/node-modules
 
 install: ./install-dependencies.sh
 script:
   #Run jest unit tests on client
   - cd ~/client
-  - npm test -- --maxWorkers=2
+  - npm test
   #Run cypress tests on client
   - npm run cypress:run
   #Run jest unit tests on server
   - cd ~/server
-  - npm test -- --maxWorkers=2
+  - npm test
