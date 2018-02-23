@@ -1,28 +1,21 @@
 {
   "name": "cmm-client",
-  "version": "1.0.0",
-  "description": "Context Call / Call Me Maybe",
-  "main": "jest.config.js",
-  "dependencies": {},
-  "devDependencies": {
-    "jest": "^22.4.2"
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@bandwidth/shared-components": "^3.0.9",
+    "jquery": "^3.3.1",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "react-scripts": "^1.1.1"
   },
   "scripts": {
-    "test": "jest"
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "jest",
+    "eject": "react-scripts eject"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/BandwidthExamples/context-call.git"
-  },
-  "keywords": [
-    "bandwidth",
-    "call",
-    "text"
-  ],
-  "author": "NCSUS CSC 492 Spring 2018 Team 22",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/BandwidthExamples/context-call/issues"
-  },
-  "homepage": "https://github.com/BandwidthExamples/context-call#readme"
+  "devDependencies": {
+    "jest": "^22.4.0"
+  }
 }
