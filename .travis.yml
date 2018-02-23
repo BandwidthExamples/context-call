@@ -13,9 +13,9 @@ install: ./install-dependencies.sh
 script:
   #Run jest unit tests on client
   - cd ~/client
-  - npm test
+  - jest
   #Run cypress tests on client
   - npm run cypress:run
   #Run jest unit tests on server
   - cd ~/server
-  - npm test
+  - jest
