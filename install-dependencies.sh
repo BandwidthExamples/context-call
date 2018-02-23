@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # install client dependencies
+pwd
 find
 cd ~/client
 cat /home/travis/client/package.json
