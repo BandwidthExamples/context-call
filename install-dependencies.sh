@@ -1,10 +1,7 @@
 #!/usr/bin/env bash
 # install client dependencies
-cd ~/server
-npm cache clean
-cd ~/client
-npm cache clean
 find
+cd ~/client
 cat /home/travis/client/package.json
 cat package.json
 npm install
