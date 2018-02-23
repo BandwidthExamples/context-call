@@ -4,6 +4,7 @@ cd ~/server
 npm cache clean
 cd ~/client
 npm cache clean
+find
 cat /home/travis/client/package.json
 cat package.json
 npm install
