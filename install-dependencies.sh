@@ -1,15 +1,11 @@
 #!/usr/bin/env bash
 # install client dependencies
-pwd
-find
-cd ~/client
-cat /home/travis/client/package.json
-cat package.json
+cd ~/build/BandwidthExamples/context-call/client
 npm install
 
 # install server dependencies
-cd ~/server
+cd ~/build/BandwidthExamples/context-call/server
 npm install node-bandwidth
 
 # restore initial working directory
-cd ..
+cd ~/build/BandwidthExamples/context-call/
