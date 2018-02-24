@@ -18,6 +18,7 @@ class App extends React.Component {
       message: ''
     };
 
+    this.setState = this.setState.bind(this);
     this.onCompanyNumberChange = this.onCompanyNumberChange.bind(this);
     this.onCustomerNumberChange = this.onCustomerNumberChange.bind(this);
     this.onTextMessageChange = this.onTextMessageChange.bind(this);
@@ -83,6 +84,7 @@ class App extends React.Component {
               </Flow.Item>
               <Flow.Item>
                 <Input
+                  id="company-number"
                   type="text"
                   value={this.state.companyNumber}
                   onChange={this.onCompanyNumberChange}
@@ -98,6 +100,7 @@ class App extends React.Component {
               </Flow.Item>
               <Flow.Item>
                 <Input
+                  id="customer-number"
                   type="text"
                   value={this.state.customerNumber}
                   onChange={this.onCustomerNumberChange}
@@ -113,6 +116,7 @@ class App extends React.Component {
               </Flow.Item>
               <Flow.Item>
                 <Input
+                  id="text-message"
                   type="text"
                   value={this.state.message}
                   onChange={this.onTextMessageChange}
@@ -123,6 +127,7 @@ class App extends React.Component {
             <Flow.Row>
               <Flow.Item>
                 <Button
+                  id="submit-button"
                   onClick={this.onTextSubmit}
                   disabled={
                     !this.state.validCompanyNumber ||
