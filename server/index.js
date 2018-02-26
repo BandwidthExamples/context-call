@@ -34,18 +34,18 @@ function bandwidth_api(httpMethod, apiEndpoint, requestBody) {
 	req.write(requestBody);
 }
 
-function send_sms(customerNumber, message, companyNumber, callDelay) {
+function send_sms(customerNumber, message, companyNumber, wait) {
 	// customerNumber: 10 digit number to text
 	// message: the text message itself
-	// companyNumber: the number to call once the appropriate callDelay has elapsed
-	// callDelay: the number of seconds to wait until calling companyNumber
+	// companyNumber: the number to call once the appropriate wait has elapsed
+	// wait: the number of seconds or timestamp to wait until calling companyNumber (e.g., {type:'seconds',seconds:60}, {type:'timestamp',timestamp:'2016-03-14T01:59:00Z'})
 	const postData = JSON.stringify({
 		from: process.env.phoneNumber,
 		to: customerNumber,
 		text: message,
 		receiptRequested: 'all', // request SMS delivery reciept
 		callbackUrl: 'https://requestb.in/1ms0s7g1', // the URL of our API endpoint that will handle waiting and then calling
-		tag: JSON.stringify({'callDelay': callDelay, 'companyNumber': companyNumber, 'customerNumber': customerNumber}) // sebd the number of seconds to wait until calling and both numbers to call
+		tag: JSON.stringify({'wait': wait, 'companyNumber': companyNumber, 'customerNumber': customerNumber}) // sebd the number of seconds to wait until calling and both numbers to call
 	});
 
 	bandwidth_api('POST', 'messages', postData);
@@ -80,9 +80,12 @@ exports.handler = (event, context, callback) => {
 		callback("message was not specified or is invalid");
 	}
 
-	if(!body.callDelay) {
-		body.callDelay = 60;
+	if(!body.wait) {
+		body.wait = {
+			type: 'seconds',
+			seconds: 60
+		};
 	}
 
-	send_sms(body.customerNumber, body.message, body.companyNumber, body.callDelay);
+	send_sms(body.customerNumber, body.message, body.companyNumber, body.wait);
 };
