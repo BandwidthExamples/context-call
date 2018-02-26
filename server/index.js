@@ -1,73 +1,88 @@
 'use strict';
 
-function return_status(http_code, message_body) {
-	console.log("Sending message body as '" + message_body + "'");
-	return {
-		"statusCode": http_code,
-		"headers": {
-			"Content-Type": "application/json",
-			"Access-Control-Allow-Origin" : "*", // Required for CORS support to work
-			"Access-Control-Allow-Credentials" : true, // Required for cookies, authorization headers with HTTPS
-			"X-Requested-With" : "*",
-			"Access-Control-Allow-Methods": "POST,GET"
-		},
-		"body": JSON.stringify({
-			"message": message_body
-		})
-	}
-}
+function bandwidth_api(httpMethod, apiEndpoint, requestBody) {
+	const https = require('https');
 
-function call_number(client, number) {
-	client.Call.create({
-		from: "+19104271337", // This must be a Catapult number on your account
-		to: number,
-	})
-	.then((message) => {
-		var return_message = "Started call with ID " + message.id;
-		// callback(null, return_status(200, return_message));
-		console.log(return_message);
-	})
-	.catch((err) => {
-		console.log(JSON.stringify(err.message));
-		// callback(err.message);
-	});
-}
-exports.handler = (event, context, callback) => {
-	console.log(process.env);
-	var Bandwidth_API = require("node-bandwidth");
-	var client = new Bandwidth_API({
-		userId: process.env.userId, // <-- note, this is not the same as the username you used to login to the portal
-		apiToken: process.env.apiToken,
-		apiSecret: process.env.apiSecret
-	});
-
-	var return_message = "";
-	console.log("Parsing event: " + JSON.stringify(event));
-	let body = JSON.parse(event.body);
-	if (body.number) {
-		console.log("Got a number");
-		if (body.message) {
-			console.log("Got a message");
-			client.Message.send({
-					from: process.env.phoneNumber, // This must be a Catapult number on your account
-					to: body.number,
-					text: body.message
-				})
-				.then((message) => {
-					return_message = "Message sent with ID " + message.id;
-					callback(null, return_status(200, return_message));
-					setTimeout(call_number, 60000, client, body.number);
-				})
-				.catch((err) => {
-					console.log(JSON.stringify(err.message));
-					callback(err.message);
-				});
-		} else {
-			call_number(client, body.number);
+	const options = {
+		hostname: 'api.catapult.inetwork.com',
+		path: `/v1/users/${process.env.userId}/${apiEndpoint}`,
+		auth: `${process.env.apiToken}:${process.env.apiSecret}`,
+		method: httpMethod,
+		headers: {
+			'Content-Type': 'application/json',
+			'Content-Length': Buffer.byteLength(requestBody)
 		}
-	} else {
-		return_message = "Please specify a number";
-		callback(null, return_status(400, return_message));
 	}
-};
 
+	let req = https.request(options, (resp) => {
+		let data = '';
+
+		resp.on('data', (chunk) => {
+			data += chunk;
+		});
+
+		resp.on('end', () => {
+			console.log(data);
+		});
+
+		resp.on('error', (err) => {
+			console.log("Error: " + err.message);
+			// retry with exponential backoff?
+		})
+	});
+
+	req.write(requestBody);
+}
+
+function send_sms(customerNumber, message, companyNumber, callDelay) {
+	// customerNumber: 10 digit number to text
+	// message: the text message itself
+	// companyNumber: the number to call once the appropriate callDelay has elapsed
+	// callDelay: the number of seconds to wait until calling companyNumber
+	const postData = JSON.stringify({
+		from: process.env.phoneNumber,
+		to: customerNumber,
+		text: message,
+		receiptRequested: 'all', // request SMS delivery reciept
+		callbackUrl: 'https://requestb.in/1ms0s7g1', // the URL of our API endpoint that will handle waiting and then calling
+		tag: JSON.stringify({'callDelay': callDelay, 'companyNumber': companyNumber, 'customerNumber': customerNumber}) // sebd the number of seconds to wait until calling and both numbers to call
+	});
+
+	bandwidth_api('POST', 'messages', postData);
+}
+
+exports.handler = (event, context, callback) => {
+	// Make callback() function like return;
+	context.callbackWaitsForEmptyEventLoop = false;
+
+	// userId: process.env.userId, // <-- note, this is not the same as the username you used to login to the portal
+	// apiToken: process.env.apiToken,
+	// apiSecret: process.env.apiSecret
+	
+	let body = JSON.parse(event.body);
+	if(!body.secret || body.secret != process.env.secret) {
+		callback("secret was not specified or is invalid");
+	}
+
+	if(body.ping) {
+		callback(null, "ready");
+	}
+
+	if(!body.companyNumber || !/\+(\d){11,13}/.test(body.companyNumber)) {
+		callback("companyNumber was not specified or is malformed");
+	}
+
+	if(!body.customerNumber || !/\+(\d){11,13}/.test(body.customerNumber)) {
+		callback("customerNumber was not specified or is malformed");
+	}
+
+	if(!body.message) {
+		callback("message was not specified or is invalid");
+	}
+
+	if(!body.callDelay) {
+		body.callDelay = 60;
+	}
+
+	send_sms(body.customerNumber, body.message, body.companyNumber, body.callDelay);
+};
