@@ -5,7 +5,8 @@ module.exports = {
   testPathIgnorePatterns: ['/node_modules/'],
   setupTestFrameworkScriptFile: '<rootDir>/src/setupTests.js',
   moduleFileExtensions: ['js', 'jsx'],
+  collectCoverage: true,
   moduleNameMapper: {
-    ".+\\.(css|less|sass|scss|png|jpg|ttf|woff|woff2|eot|svg)$": "identity-obj-proxy"
+    '.+\\.(css|less|sass|scss|png|jpg|ttf|woff|woff2|eot|svg)$': 'identity-obj-proxy'
   }
 };

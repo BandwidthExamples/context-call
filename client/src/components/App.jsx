@@ -1,6 +1,7 @@
 import React from 'react';
 import $ from 'jquery';
 import {
+  BandwidthThemeProvider,
   Button,
   Flow,
   Form,
@@ -64,16 +65,13 @@ class App extends React.Component {
       url: 'https://jxguino42f.execute-api.us-west-2.amazonaws.com/prod/NodeJS-random-number-generator',
       data: JSON.stringify(data),
       dataType: 'json',
-      crossDomain: true,
-      success: (res) => {
-        console.log(res);
-      }
+      crossDomain: true
     });
   }
 
   render() {
     return (
-      <div>
+      <BandwidthThemeProvider>
         <Form>
           <Flow>
             <Flow.Row>
@@ -141,7 +139,7 @@ class App extends React.Component {
             </Flow.Row>
           </Flow>
         </Form>
-      </div>
+      </BandwidthThemeProvider>
     );
   }
 }
