@@ -14,7 +14,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "jest",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "deploy": "npm run build && aws s3 cp ./build s3://call-me-maybe/ --recursive"
   },
   "devDependencies": {
     "babel-preset-env": "^1.6.1",
