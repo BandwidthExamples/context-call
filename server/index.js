@@ -74,7 +74,7 @@ exports.handler = (event, context, callback) => {
 	console.log("Parsing event: " + JSON.stringify(event));
 	let body = JSON.parse(event.body);
 	if(!body.secret || body.secret != process.env.secret) {
-		callback("Invalid secret");
+		callback(return_status(400, "Invalid secret"));
 	}
 	if (body.companyNumber && body.customerNumber) {
 		console.log("Got both numbers");
@@ -94,10 +94,9 @@ exports.handler = (event, context, callback) => {
 					callback(err.message);
 				});
 		} else {
-			callback("Please specify a message");
+			callback(return_status(400, "Please specify a message"));
 		}
 	} else {
-		return_message = "Please specify both numbers";
-		callback(return_message);
+		callback(return_status(400, "Please specify both numbers"));
 	}
 };
