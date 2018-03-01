@@ -18,7 +18,7 @@ function return_status(http_code, message_body) {
 }
 
 
-function call_numbers(client, number1, number2) {
+function call_numbers(client, number1, number2, callback) {
 	var c1 = "";
 	console.log("Calling first number...");
 	client.Call.create({
@@ -74,7 +74,7 @@ exports.handler = (event, context, callback) => {
 	console.log("Parsing event: " + JSON.stringify(event));
 	let body = JSON.parse(event.body);
 	if(!body.secret || body.secret != process.env.secret) {
-		callback(return_status(400, "Invalid secret"));
+		callback(null, return_status(400, "Invalid secret"));
 	}
 	if (body.companyNumber && body.customerNumber) {
 		console.log("Got both numbers");
@@ -87,16 +87,16 @@ exports.handler = (event, context, callback) => {
 				})
 				.then((message) => {
 					return_message = "Message sent with ID " + message.id;
-					setTimeout(call_numbers, 6000, client, body.companyNumber, body.customerNumber);
+					setTimeout(call_numbers, 15000, client, body.companyNumber, body.customerNumber, callback);
 				})
 				.catch((err) => {
 					console.log(JSON.stringify(err.message));
 					callback(err.message);
 				});
 		} else {
-			callback(return_status(400, "Please specify a message"));
+			callback(null, return_status(400, "Please specify a message"));
 		}
 	} else {
-		callback(return_status(400, "Please specify both numbers"));
+		callback(null, return_status(400, "Please specify both numbers"));
 	}
 };
