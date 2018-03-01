@@ -33,6 +33,13 @@ describe('App', () => {
 });
 
 describe('App', () => {
+  it('renders a text message field', () => {
+    const wrapper = render(<App/>);
+    expect(wrapper.find('#secret-key').length).toEqual(1);
+  });
+});
+
+describe('App', () => {
   it('renders a submit button', () => {
     const wrapper = render(<App/>);
     expect(wrapper.find('#submit-button').length).toEqual(1);
@@ -82,6 +89,20 @@ describe('App', () => {
 });
 
 describe('App', () => {
+  it('updates the secret on change event', () => {
+    const wrapper = shallow(<App/>);
+    const instance = wrapper.instance();
+    instance.onSecretChange({
+      target: {
+        value: 'Test Secret'
+      }
+    });
+
+    expect(wrapper.state().secret).toEqual('Test Secret');
+  });
+});
+
+describe('App', () => {
   it('button is disabled when nothing is entered', () => {
     const wrapper = shallow(<App/>);
     const button = wrapper.find('#submit-button');
@@ -97,7 +118,9 @@ describe('App', () => {
       customerNumber: '+15555555555',
       validCustomerNumber: true,
       message: 'Test Msg',
-      validMessage: true
+      validMessage: true,
+      secret: 'Test Secret',
+      validSecret: true
     });
 
     const button = wrapper.find('#submit-button');
@@ -116,6 +139,12 @@ describe('App', () => {
       }
     });
     expect($.ajax.mock.calls.length).toEqual(1);
-    expect($.ajax.mock.calls[0][0].data).toEqual('{"companyNumber":"","customerNumber":"","message":""}');
+    const expected = {
+      companyNumber: '',
+      customerNumber: '',
+      message: '',
+      secret: ''
+    };
+    expect($.ajax.mock.calls[0][0].data).toEqual(JSON.stringify(expected));
   });
 });
