@@ -72,7 +72,7 @@ class App extends React.Component {
     };
     $.ajax({
       type: 'POST',
-      url: 'https://cjz6rqknt5.execute-api.us-west-2.amazonaws.com/prod/NodeJS-random-number-generator',
+      url: 'https://aed46gt651.execute-api.us-west-2.amazonaws.com/prod/ContextCallV1',
       data: JSON.stringify(data),
       dataType: 'json',
       crossDomain: true,
