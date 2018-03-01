@@ -2,7 +2,9 @@
   "name": "cmm-server",
   "version": "0.1.0",
   "private": true,
-  "dependencies": {},
+  "dependencies": {
+    "node-bandwidth":"^2.6.2"
+  },
   "scripts": {
     "test": "jest"
   },
