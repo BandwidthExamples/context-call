@@ -8,8 +8,10 @@ cache:
     - ~/build/BandwidthExamples/context-call/client/node-modules
 
     #Cache Server npm install files
-    - ~/build/BandwidthExamples/context-call/server/.npm
-    - ~/build/BandwidthExamples/context-call/server/node-modules
+    - ~/build/BandwidthExamples/context-call/server/text/.npm
+    - ~/build/BandwidthExamples/context-call/server/text/node-modules
+    - ~/build/BandwidthExamples/context-call/server/call/.npm
+    - ~/build/BandwidthExamples/context-call/server/call/node-modules
 
 install: ./install-dependencies.sh
 script:
