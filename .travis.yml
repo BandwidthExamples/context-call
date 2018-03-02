@@ -4,28 +4,30 @@ node_js:
 cache:
   directories:
     #Cache Client npm install files
-    - ~/build/BandwidthExamples/context-call/client/.npm
-    - ~/build/BandwidthExamples/context-call/client/node-modules
+    - ${TRAVIS_BUILD_DIR}/client/.npm
+    - ${TRAVIS_BUILD_DIR}/client/node-modules
 
     #Cache Server npm install files
-    - ~/build/BandwidthExamples/context-call/server/text/.npm
-    - ~/build/BandwidthExamples/context-call/server/text/node-modules
-    - ~/build/BandwidthExamples/context-call/server/call/.npm
-    - ~/build/BandwidthExamples/context-call/server/call/node-modules
+    - ${TRAVIS_BUILD_DIR}/server/text/.npm
+    - ${TRAVIS_BUILD_DIR}/server/text/node-modules
+    - ${TRAVIS_BUILD_DIR}/server/call/.npm
+    - ${TRAVIS_BUILD_DIR}/server/call/node-modules
 
 install: ./install-dependencies.sh
 script:
   #Run jest unit tests on client
-  - cd ~/build/BandwidthExamples/context-call/client
+  - cd ${TRAVIS_BUILD_DIR}/client
   - jest
   #Run cypress tests on client
 #  - npm run cypress:run
   # Run tests for the text version of our API
-  - cd ~/build/BandwidthExamples/context-call/server/text
+  - cd ${TRAVIS_BUILD_DIR}/server/text
   - jest
+  - rm -r node_modules; npm install --production # for lambda zip to not be bloated with dev dependencies
   # Run tests for the call version of our API
-  - cd ~/build/BandwidthExamples/context-call/server/call
+  - cd ${TRAVIS_BUILD_DIR}/server/call
   - jest
+  - rm -r node_modules; npm install --production # for lambda zip to not be bloated with dev dependencies
 #Deploy to lambda
 deploy:
   provider: lambda
