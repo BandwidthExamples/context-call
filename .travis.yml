@@ -31,10 +31,10 @@ deploy:
   provider: lambda
   function_name: "ContextCallV2"
   region: "us-west-2"
-  role: "arn:aws:iam::957512267502:role/lambda_basic_execution"
-  runtime: "nodejs4.3"
+  role: "arn:aws:iam::957512267502:role/AWSLamdbaFullAccess"
+  runtime: "nodejs6.10"
   handler_name: "handler"
-  access_key_id: AWSACCESSKEY
-  secret_access_key: SECRETACCESSKEY
+  access_key_id: $AWSACCESSKEY
+  secret_access_key: $SECRETACCESSKEY
   on:
     branch: modular_lambda
