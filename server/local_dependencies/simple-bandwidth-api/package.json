@@ -1,0 +1,20 @@
+{
+  "name": "simple-bandwidth-api",
+  "version": "0.0.1",
+  "description": "A very simple interface for Bandwidth.com's API",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [
+    "bandwidth",
+    "api",
+    "calls",
+    "texts"
+  ],
+  "author": "Nick Ashley",
+  "license": "ISC",
+  "dependencies": {
+    "aws-api-gateway-return": "file:../aws-api-gateway-return"
+  }
+}
