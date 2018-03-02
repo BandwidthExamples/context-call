@@ -26,8 +26,6 @@ script:
   # Run tests for the call version of our API
   - cd ~/build/BandwidthExamples/context-call/server/call
   - jest
-  # TODO delete this
-  - cd ~/build/BandwidthExamples/context-call/server/text
 #Deploy to lambda
 deploy:
   provider: lambda
