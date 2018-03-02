@@ -39,5 +39,7 @@ deploy:
   zip: "${TRAVIS_BUILD_DIR}/server/text"
   access_key_id: $AWSACCESSKEY
   secret_access_key: $SECRETACCESSKEY
+  environment_variables:
+    - secret=password
   on:
     branch: modular_lambda
