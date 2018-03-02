@@ -30,21 +30,22 @@ script:
   - rm -r node_modules; npm install --production # for lambda zip to not be bloated with dev dependencies
 #Deploy to lambda via script
 deploy:
-  provider: script
-  script: ${TRAVIS_BUILD_DIR}/deploy.sh
-  on:
-    branch: modular_lambda
-  # - provider: lambda
-  # function_name: "ContextCallV2"
-  # region: "us-west-2"
-  # role: "arn:aws:iam::957512267502:role/LambdaDeployment"
-  # runtime: "nodejs6.10"
-  # handler_name: "handler"
-  # zip: "${TRAVIS_BUILD_DIR}/server/text"
-  # access_key_id: $AWSACCESSKEY
-  # secret_access_key: $SECRETACCESSKEY
-  # environment_variables:
-  #   - SECRET=password
-  #   - BUILD_DIR=$TRAVIS_BUILD_DIR
+  # provider: script
+  # script: ${TRAVIS_BUILD_DIR}/deploy.sh
   # on:
   #   branch: modular_lambda
+  provider: lambda
+  skip_cleanup: true
+  function_name: "ContextCallV2"
+  region: "us-west-2"
+  role: "arn:aws:iam::957512267502:role/LambdaDeployment"
+  runtime: "nodejs6.10"
+  handler_name: "handler"
+  zip: "${TRAVIS_BUILD_DIR}/server/text"
+  access_key_id: $AWSACCESSKEY
+  secret_access_key: $SECRETACCESSKEY
+  environment_variables:
+    - SECRET=password
+    - BUILD_DIR=$TRAVIS_BUILD_DIR
+  on:
+    branch: modular_lambda
