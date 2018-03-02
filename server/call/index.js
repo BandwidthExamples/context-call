@@ -9,9 +9,7 @@ function callNumber(customerNumber, companyNumber, wait, callback) {
 	const postData = JSON.stringify({
 		from: process.env.phoneNumber,
 		to: customerNumber,
-		text: message,
-		receiptRequested: 'all', // request SMS delivery reciept
-		callbackUrl: 'https://requestb.in/1ms0s7g1', // the URL of our API endpoint that will handle waiting and then calling
+		callbackUrl: process.env.URL, // the URL of our API endpoint that will handle waiting and then calling
 		tag: JSON.stringify({'wait': wait, 'companyNumber': companyNumber, 'customerNumber': customerNumber}) // send the number of seconds to wait until calling as well as both numbers to call
 	});
 
@@ -25,7 +23,7 @@ exports.handler = (event, context, callback) => {
 	context.callbackWaitsForEmptyEventLoop = false;
 
 	let body = JSON.parse(event.body);
-	if(!body.secret || body.secret != process.env.secret) {
+	if(!body.secret || body.secret != process.env.SECRET) {
 		callback(null, httpResponse(401, "secret was not specified or is invalid"));
 	}
 

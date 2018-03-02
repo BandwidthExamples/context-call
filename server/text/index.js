@@ -9,7 +9,7 @@ function send_sms(customerNumber, message, companyNumber, delay, callback) {
 	bandwidthAPI = require('simple-bandwidth-api');
 
 	const postData = JSON.stringify({
-		from: process.env.phoneNumber,
+		from: process.env.PHONE_NUMBER,
 		to: customerNumber,
 		text: message,
 		receiptRequested: 'all', // request SMS delivery reciept
@@ -27,7 +27,7 @@ exports.handler = (event, context, callback) => {
 	context.callbackWaitsForEmptyEventLoop = false;
 	
 	let body = JSON.parse(event.body);
-	if(!body.secret || body.secret != process.env.secret) {
+	if(!body.secret || body.secret != process.env.SECRET) {
 		callback(null, httpResponse(401, "invalid/unspecified secret"));
 	}
 

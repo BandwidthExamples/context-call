@@ -3,8 +3,8 @@ function request(httpMethod, apiEndpoint, requestBody, callback) {
 
 	const options = {
 		hostname: 'api.catapult.inetwork.com',
-		path: `/v1/users/${process.env.userId}/${apiEndpoint}`,
-		auth: `${process.env.apiToken}:${process.env.apiSecret}`,
+		path: `/v1/users/${process.env.USER_ID}/${apiEndpoint}`,
+		auth: `${process.env.API_TOKEN}:${process.env.API_SECRET}`,
 		method: httpMethod,
 		headers: {
 			'Content-Type': 'application/json',
