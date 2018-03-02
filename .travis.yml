@@ -26,6 +26,8 @@ script:
   # Run tests for the call version of our API
   - cd ~/build/BandwidthExamples/context-call/server/call
   - jest
+  # TODO delete this
+  - cd ~/build/BandwidthExamples/context-call/server/text
 #Deploy to lambda
 deploy:
   provider: lambda
@@ -34,7 +36,6 @@ deploy:
   role: "arn:aws:iam::957512267502:role/LambdaDeployment"
   runtime: "nodejs6.10"
   handler_name: "handler"
-  zip: "~/build/BandwidthExamples/context-call/server/text"
   access_key_id: $AWSACCESSKEY
   secret_access_key: $SECRETACCESSKEY
   on:
