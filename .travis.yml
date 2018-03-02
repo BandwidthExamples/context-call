@@ -40,6 +40,7 @@ deploy:
   access_key_id: $AWSACCESSKEY
   secret_access_key: $SECRETACCESSKEY
   environment_variables:
-    - secret=password
+    - SECRET=password
+    - BUILD_DIR=$TRAVIS_BUILD_DIR
   on:
     branch: modular_lambda
