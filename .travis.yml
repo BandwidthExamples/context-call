@@ -34,3 +34,5 @@ deploy:
   handler_name: "handler"
   access_key_id: AWSACCESSKEY
   secret_access_key: SECRETACCESSKEY
+  on:
+    branch: modular_lambda
