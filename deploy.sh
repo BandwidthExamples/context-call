@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # deploy client to s3
-cd ${TRAVIS_BUILD_DIR}/client/
-rm -r node_modules
-npm install --production
+# cd ${TRAVIS_BUILD_DIR}/client/
+# rm -r node_modules
+# npm install --production
 
 # deploy text server to lambda
 cd ${TRAVIS_BUILD_DIR}/server/text/

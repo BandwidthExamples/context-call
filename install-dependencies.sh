@@ -12,3 +12,5 @@ npm install
 
 # restore initial working directory
 cd ${TRAVIS_BUILD_DIR}/
+
+pip install awscli --upgrade --user
