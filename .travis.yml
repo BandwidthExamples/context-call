@@ -24,3 +24,13 @@ script:
   # Run tests for the call version of our API
   - cd ~/build/BandwidthExamples/context-call/server/call
   - jest
+#Deploy to lambda
+deploy:
+  provider: lambda
+  function_name: "ContextCallV2"
+  region: "us-west-2"
+  role: "arn:aws:iam::957512267502:role/lambda_basic_execution"
+  runtime: "nodejs4.3"
+  handler_name: "handler"
+  access_key_id: "AWS ACCESS KEY ID"
+  secret_access_key: "AWS SECRET ACCESS KEY"
