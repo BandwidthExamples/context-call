@@ -34,7 +34,7 @@ deploy:
   role: "arn:aws:iam::957512267502:role/LambdaDeployment"
   runtime: "nodejs6.10"
   handler_name: "handler"
-  zip: "server/text"
+  zip: "~/build/BandwidthExamples/context-call/server/text/"
   access_key_id: $AWSACCESSKEY
   secret_access_key: $SECRETACCESSKEY
   on:
