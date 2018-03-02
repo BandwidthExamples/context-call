@@ -30,9 +30,8 @@ script:
   - rm -r node_modules; npm install --production # for lambda zip to not be bloated with dev dependencies
 #Deploy to lambda via script
 deploy:
-  - provider: script
+  provider: script
   script: ${TRAVIS_BUILD_DIR}/deploy.sh
-  skip_cleanup: false
   on:
     branch: modular_lambda
   # - provider: lambda
