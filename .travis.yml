@@ -18,6 +18,9 @@ script:
   - jest
   #Run cypress tests on client
 #  - npm run cypress:run
-  #Run jest unit tests on server
-  - cd ~/build/BandwidthExamples/context-call/server
+  # Run tests for the text version of our API
+  - cd ~/build/BandwidthExamples/context-call/server/text
+  - jest
+  # Run tests for the call version of our API
+  - cd ~/build/BandwidthExamples/context-call/server/call
   - jest
