@@ -13,7 +13,7 @@ cache:
     - ${TRAVIS_BUILD_DIR}/server/call/.npm
     - ${TRAVIS_BUILD_DIR}/server/call/node-modules
 
-install: ./install-dependencies.sh
+install: ${TRAVIS_BUILD_DIR}/install-dependencies.sh
 script:
   #Run jest unit tests on client
   - cd ${TRAVIS_BUILD_DIR}/client
@@ -28,19 +28,24 @@ script:
   - cd ${TRAVIS_BUILD_DIR}/server/call
   - jest
   - rm -r node_modules; npm install --production # for lambda zip to not be bloated with dev dependencies
-#Deploy to lambda
+#Deploy to lambda via script
 deploy:
-  provider: lambda
-  function_name: "ContextCallV2"
-  region: "us-west-2"
-  role: "arn:aws:iam::957512267502:role/LambdaDeployment"
-  runtime: "nodejs6.10"
-  handler_name: "handler"
-  zip: "${TRAVIS_BUILD_DIR}/server/text"
-  access_key_id: $AWSACCESSKEY
-  secret_access_key: $SECRETACCESSKEY
-  environment_variables:
-    - SECRET=password
-    - BUILD_DIR=$TRAVIS_BUILD_DIR
+  - provider: script
+  script: ${TRAVIS_BUILD_DIR}/deploy.sh
+  skip_cleanup: false
   on:
     branch: modular_lambda
+  # - provider: lambda
+  # function_name: "ContextCallV2"
+  # region: "us-west-2"
+  # role: "arn:aws:iam::957512267502:role/LambdaDeployment"
+  # runtime: "nodejs6.10"
+  # handler_name: "handler"
+  # zip: "${TRAVIS_BUILD_DIR}/server/text"
+  # access_key_id: $AWSACCESSKEY
+  # secret_access_key: $SECRETACCESSKEY
+  # environment_variables:
+  #   - SECRET=password
+  #   - BUILD_DIR=$TRAVIS_BUILD_DIR
+  # on:
+  #   branch: modular_lambda
