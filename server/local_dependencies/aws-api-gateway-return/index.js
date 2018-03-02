@@ -1,4 +1,6 @@
-exports.returnStatus = (httpCode, messageBody) {
+'use strict';
+
+exports.create = function (httpCode, messageBody) {
 		// httpCode: the HTTP status code to send
 		// messageBody: the response text itself
 	return {
@@ -15,5 +17,5 @@ exports.returnStatus = (httpCode, messageBody) {
 			"message": messageBody
 		})
 	}
-}
+};
 

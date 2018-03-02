@@ -4,7 +4,7 @@ function callNumber(customerNumber, companyNumber, wait, callback) {
 	// customerNumber: 10 digit number to text
 	// companyNumber: the number to call once the appropriate wait has elapsed
 	// wait: the number of seconds or timestamp to wait until calling companyNumber (e.g., {type:'seconds',seconds:60}, {type:'timestamp',timestamp:'2016-03-14T01:59:00Z'})
-	let bandwidthAPI = require('BandwidthAPI');
+	const bandwidthAPI = require('BandwidthAPI');
 
 	const postData = JSON.stringify({
 		from: process.env.phoneNumber,
@@ -19,12 +19,12 @@ function callNumber(customerNumber, companyNumber, wait, callback) {
 exports.handler = (event, context, callback) => {
 	// Make callback() function like return; i.e., exit after its called
 	// TODO ensure that this is secure
-	httpReponse = require('aws-api-gateway-return');
+	const httpReponse = require('aws-api-gateway-return');
 	context.callbackWaitsForEmptyEventLoop = false;
 
 	let body = JSON.parse(event.body);
 	if(!body.secret || body.secret != process.env.SECRET) {
-		callback(null, httpResponse(401, "secret was not specified or is invalid"));
+		callback(null, httpResponse.create(401, "secret was not specified or is invalid"));
 	}
 
 	switch(body.request) {
