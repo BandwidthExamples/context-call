@@ -35,7 +35,7 @@ deploy:
   # on:
   #   branch: modular_lambda
   provider: lambda
-  skip_cleanup: true
+  skip_cleanup: false
   function_name: "ContextCallV2"
   region: "us-west-2"
   role: "arn:aws:iam::957512267502:role/LambdaDeployment"
