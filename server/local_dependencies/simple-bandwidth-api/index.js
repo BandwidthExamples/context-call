@@ -24,7 +24,7 @@ function request(httpMethod, apiEndpoint, requestBody, callback) {
 		});
 
 		resp.on('end', () => {
-			console.log("Bandwidth response: " + data);
+			console.log("Bandwidth response: '" + data + "'");
 			// TODO verify return data/check docs/return the successful action to the client
 			callback(null, httpResponse.create(200, ""));
 		});
