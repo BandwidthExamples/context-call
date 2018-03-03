@@ -10,6 +10,8 @@ npm install
 cd ${TRAVIS_BUILD_DIR}/server/call/
 npm install
 
+cd ${TRAVIS_BUILD_DIR}/server/local_dependencies/
+
 # restore initial working directory
 cd ${TRAVIS_BUILD_DIR}/
 
