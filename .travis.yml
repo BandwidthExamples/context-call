@@ -23,11 +23,11 @@ script:
   # Run tests for the text version of our API
   - cd ${TRAVIS_BUILD_DIR}/server/text
   - jest
-  - rm -r node_modules; npm install --production # for lambda zip to not be bloated with dev dependencies
+  # - rm -r node_modules; npm install --production # for lambda zip to not be bloated with dev dependencies
   # Run tests for the call version of our API
   - cd ${TRAVIS_BUILD_DIR}/server/call
   - jest
-  - rm -r node_modules; npm install --production # for lambda zip to not be bloated with dev dependencies
+  # - rm -r node_modules; npm install --production # for lambda zip to not be bloated with dev dependencies
 #Deploy to lambda via script
 deploy:
   # provider: script
@@ -35,7 +35,7 @@ deploy:
   # on:
   #   branch: modular_lambda
   provider: lambda
-  skip_cleanup: false
+  skip_cleanup: true
   function_name: "ContextCallV2"
   region: "us-west-2"
   role: "arn:aws:iam::957512267502:role/LambdaDeployment"
