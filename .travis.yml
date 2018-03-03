@@ -50,7 +50,7 @@ deploy:
   role: "arn:aws:iam::957512267502:role/LambdaDeployment"
   runtime: "nodejs6.10"
   handler_name: "handler"
-  zip: "${TRAVIS_BUILD_DIR}/server/text"
+  zip: "${TRAVIS_BUILD_DIR}/server"
   access_key_id: $AWSACCESSKEY
   secret_access_key: $SECRETACCESSKEY
   environment_variables:
@@ -61,3 +61,5 @@ deploy:
     - USER_ID=$AWS_LAMBDA_ENV_USER_ID
   on:
     branch: modular_lambda
+after_deploy:
+  rm ${TRAVIS_BUILD_DIR}/context_call_v2_text.zip
