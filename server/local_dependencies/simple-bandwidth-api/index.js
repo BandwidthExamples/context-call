@@ -24,13 +24,13 @@ function request(httpMethod, apiEndpoint, requestBody, callback) {
 		});
 
 		resp.on('end', () => {
-			console.log(data);
+			console.log("Bandwidth response: " + data);
 			// TODO verify return data/check docs/return the successful action to the client
 			callback(null, httpResponse.create(200, ""));
 		});
 
 		resp.on('error', (err) => {
-			console.log("Error: " + err.message);
+			console.log("Bandwidth error: " + err.message);
 			console.log(err);
 			// TODO retry with exponential backoff?
 			callback(null, httpResponse.create(500, err.message)); // TODO change from 500 to Bandwidth API status or decide on a status that reflects external API failure
