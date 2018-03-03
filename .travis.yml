@@ -61,6 +61,7 @@ deploy:
     - API_TOKEN=$AWS_LAMBDA_ENV_API_TOKEN
     - PHONE_NUMBER=$AWS_LAMBDA_ENV_PHONE_NUMBER
     - USER_ID=$AWS_LAMBDA_ENV_USER_ID
+    - CALLBACK_URL=$AWS_LAMBDA_ENV_CALLBACK_URL
   on:
     branch: modular_lambda
 after_deploy:

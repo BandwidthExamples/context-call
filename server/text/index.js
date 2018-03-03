@@ -13,7 +13,7 @@ function send_sms(customerNumber, message, companyNumber, delay, callback) {
 		to: customerNumber,
 		text: message,
 		receiptRequested: 'all', // request SMS delivery reciept
-		callbackUrl: 'https://requestb.in/1ms0s7g1', // the URL of our API endpoint that will handle delaying and then calling
+		callbackUrl: process.env.CALLBACK_URL, // the URL of our API endpoint that will handle delaying and then calling
 		tag: JSON.stringify({'delay': delay, 'companyNumber': companyNumber, 'customerNumber': customerNumber}) // send the delay between texting and calling as well as both numbers to call
 	});
 
