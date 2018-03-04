@@ -40,29 +40,44 @@ before_deploy:
   - cd ${TRAVIS_BUILD_DIR}/server/call
   - rm -r node_modules
   - npm install --production # for lambda zip to not be bloated with dev dependencies
+  - zip context_call_v2_text -r node_modules/ index.js
 #Deploy to lambda via dpl
 deploy:
-  # provider: script
-  # script: ${TRAVIS_BUILD_DIR}/deploy.sh
-  # on:
-  #   branch: modular_lambda
-  provider: lambda
-  function_name: "ContextCallV2"
-  region: "us-west-2"
-  role: "arn:aws:iam::957512267502:role/LambdaDeployment"
-  runtime: "nodejs6.10"
-  handler_name: "handler"
-  zip: "${TRAVIS_BUILD_DIR}/server/text/context_call_v2_text.zip"
-  access_key_id: $AWSACCESSKEY
-  secret_access_key: $SECRETACCESSKEY
-  environment_variables:
-    - SECRET=$AWS_LAMBDA_ENV_SECRET
-    - API_SECRET=$AWS_LAMBDA_ENV_API_SECRET
-    - API_TOKEN=$AWS_LAMBDA_ENV_API_TOKEN
-    - PHONE_NUMBER=$AWS_LAMBDA_ENV_PHONE_NUMBER
-    - USER_ID=$AWS_LAMBDA_ENV_USER_ID
-    - CALLBACK_URL=$AWS_LAMBDA_ENV_CALLBACK_URL
-  on:
-    branch: modular_lambda
+  - provider: lambda
+    function_name: "ContextCallV2Text"
+    region: "us-west-2"
+    role: "arn:aws:iam::957512267502:role/LambdaDeployment"
+    runtime: "nodejs6.10"
+    handler_name: "handler"
+    zip: "${TRAVIS_BUILD_DIR}/server/text/context_call_v2_text.zip"
+    access_key_id: $AWSACCESSKEY
+    secret_access_key: $SECRETACCESSKEY
+    environment_variables:
+      - SECRET=$AWS_LAMBDA_ENV_SECRET
+      - API_SECRET=$AWS_LAMBDA_ENV_API_SECRET
+      - API_TOKEN=$AWS_LAMBDA_ENV_API_TOKEN
+      - PHONE_NUMBER=$AWS_LAMBDA_ENV_PHONE_NUMBER
+      - USER_ID=$AWS_LAMBDA_ENV_USER_ID
+      - CALLBACK_URL=$AWS_LAMBDA_ENV_CALLBACK_URL
+    on:
+      branch: modular_lambda
+  - provider: lambda
+    function_name: "ContextCallV2Call"
+    region: "us-west-2"
+    role: "arn:aws:iam::957512267502:role/LambdaDeployment"
+    runtime: "nodejs6.10"
+    handler_name: "handler"
+    zip: "${TRAVIS_BUILD_DIR}/server/call/context_call_v2_call.zip"
+    access_key_id: $AWSACCESSKEY
+    secret_access_key: $SECRETACCESSKEY
+    environment_variables:
+      - SECRET=$AWS_LAMBDA_ENV_SECRET
+      - API_SECRET=$AWS_LAMBDA_ENV_API_SECRET
+      - API_TOKEN=$AWS_LAMBDA_ENV_API_TOKEN
+      - PHONE_NUMBER=$AWS_LAMBDA_ENV_PHONE_NUMBER
+      - USER_ID=$AWS_LAMBDA_ENV_USER_ID
+      - CALLBACK_URL=$AWS_LAMBDA_ENV_CALLBACK_URL
+    on:
+      branch: modular_lambda
 after_deploy:
   rm ${TRAVIS_BUILD_DIR}/context_call_v2_text.zip
