@@ -1,6 +1,6 @@
 'use strict';
 
-function callNumber(customerNumber, companyNumber, wait, callback) {
+function callNumber(companyNumber, customerNumber, wait, callback) {
 	// customerNumber: 10 digit number to text
 	// companyNumber: the number to call once the appropriate wait has elapsed
 	// wait: the number of seconds or timestamp to wait until calling companyNumber (e.g., {type:'seconds',seconds:60}, {type:'timestamp',timestamp:'2016-03-14T01:59:00Z'})
@@ -19,7 +19,7 @@ function callNumber(customerNumber, companyNumber, wait, callback) {
 exports.handler = (event, context, callback) => {
 	// Make callback() function like return; i.e., exit after its called
 	// TODO ensure that this is secure
-	const httpReponse = require('aws-api-gateway-return');
+	const httpResponse = require('aws-api-gateway-return');
 	context.callbackWaitsForEmptyEventLoop = false;
 
 	let body = JSON.parse(event.body);
@@ -29,10 +29,10 @@ exports.handler = (event, context, callback) => {
 
 	switch(body.request) {
 		case 'call':
-			bridgeCalls(body.companyNumber, body.customerNumber, callback);
+			callNumber(body.companyNumber, body.customerNumber, callback);
 			break;
 		case 'bridgeCalls':
-			sendSMS(body.companyCallID, body.customerCallID, callback);
+			bridgeCalls(body.companyCallID, body.customerCallID, callback);
 			break;
 	}
 };
