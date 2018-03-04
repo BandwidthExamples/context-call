@@ -7,9 +7,9 @@ function callNumber(companyNumber, customerNumber, wait, callback) {
 	const bandwidthAPI = require('simple-bandwidth-api');
 
 	const postData = JSON.stringify({
-		from: process.env.phoneNumber,
+		from: process.env.PHONE_NUMBER,
 		to: customerNumber,
-		callbackUrl: process.env.URL, // the URL of our API endpoint that will handle waiting and then calling
+		callbackUrl: process.env.CALLBACK_WAIT_URL, // the URL of our API endpoint that will handle waiting and then calling
 		tag: JSON.stringify({'wait': wait, 'companyNumber': companyNumber, 'customerNumber': customerNumber}) // send the number of seconds to wait until calling as well as both numbers to call
 	});
 
