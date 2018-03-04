@@ -1,6 +1,6 @@
 'use strict';
 
-function callNumber(companyNumber, customerNumber, wait, callback) {
+function callNumber(companyNumber, customerNumber, callback) {
 	// customerNumber: 10 digit number to text
 	// companyNumber: the number to call once the appropriate wait has elapsed
 	// wait: the number of seconds or timestamp to wait until calling companyNumber (e.g., {type:'seconds',seconds:60}, {type:'timestamp',timestamp:'2016-03-14T01:59:00Z'})
