@@ -40,7 +40,7 @@ before_deploy:
   - cd ${TRAVIS_BUILD_DIR}/server/call
   - rm -r node_modules
   - npm install --production # for lambda zip to not be bloated with dev dependencies
-  - zip context_call_v2_text -r node_modules/ index.js
+  - zip context_call_v2_call -r node_modules/ index.js
 #Deploy to lambda via dpl
 deploy:
   - provider: lambda
