@@ -13,7 +13,7 @@ function callNumber(companyNumber, customerNumber, wait, callback) {
 		tag: JSON.stringify({'wait': wait, 'companyNumber': companyNumber, 'customerNumber': customerNumber}) // send the number of seconds to wait until calling as well as both numbers to call
 	});
 
-	bandwidthAPI.post('messages', postData, callback);
+	bandwidthAPI.post('calls', postData, callback);
 }
 
 exports.handler = (event, context, callback) => {
