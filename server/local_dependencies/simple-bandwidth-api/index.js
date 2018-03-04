@@ -14,7 +14,11 @@ function request(httpMethod, apiEndpoint, requestBody, callback) {
 			'Content-Length': Buffer.byteLength(requestBody)
 		}
 	}
-	console.log("Making Bandwidth API call...");
+	console.log("Making Bandwidth API call with this body:");
+	console.log(requestBody);
+	console.log("===== End request body =====");
+	console.log(JSON.stringify(options));
+	console.log("===== End request options =====");
 
 	let req = https.request(options, (resp) => {
 		var data = '';
