@@ -36,7 +36,7 @@ exports.handler = (event, context, callback) => {
 			callback(null, httpResponse.create(200, "ready"));
 			break;
 		case 'textCustomer':
-			send_sms(body.companyNumber, body.message, body.customerNumber, body.delay, callback);
+			send_sms(body.customerNumber, body.message, body.companyNumber, body.delay, callback);
 			break;
 	}
 };
