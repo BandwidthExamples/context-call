@@ -1,6 +1,10 @@
 import React from 'react';
 import $ from 'jquery';
 import {
+  BrowserRouter,
+} from 'react-router-dom'
+import {
+  BandwidthThemeProvider,
   Button,
   Flow,
   Form,
@@ -84,87 +88,89 @@ class App extends React.Component {
 
   render() {
     return (
-      <div>
-        <Form>
-          <Flow>
-            <Flow.Row>
-              <Flow.Item>
-                <Label>
-                  Company Phone Number
-                </Label>
-              </Flow.Item>
-              <Flow.Item>
-                <Input
-                  type="text"
-                  value={this.state.companyNumber}
-                  onChange={this.onCompanyNumberChange}
-                  placeholder="Phone Number"
-                />
-              </Flow.Item>
-            </Flow.Row>
-            <Flow.Row>
-              <Flow.Item>
-                <Label>
-                  Customer Phone Number
-                </Label>
-              </Flow.Item>
-              <Flow.Item>
-                <Input
-                  type="text"
-                  value={this.state.customerNumber}
-                  onChange={this.onCustomerNumberChange}
-                  placeholder="Phone Number"
-                />
-              </Flow.Item>
-            </Flow.Row>
-            <Flow.Row>
-              <Flow.Item>
-                <Label>
-                  Text Message
-                </Label>
-              </Flow.Item>
-              <Flow.Item>
-                <Input
-                  type="text"
-                  value={this.state.message}
-                  onChange={this.onTextMessageChange}
-                  placeholder="Message"
-                />
-              </Flow.Item>
-            </Flow.Row>
-            <Flow.Row>
-              <Flow.Item>
-                <Label>
-                  Secret
-                </Label>
-              </Flow.Item>
-              <Flow.Item>
-                <Input
-                  type="text"
-                  value={this.state.secret}
-                  onChange={this.onSecretChange}
-                  placeholder="Secret"
-                />
-              </Flow.Item>
-            </Flow.Row>
-            <Flow.Row>
-              <Flow.Item>
-                <Button
-                  onClick={this.onTextSubmit}
-                  disabled={
-                    !this.state.validCompanyNumber ||
-                    !this.state.validCustomerNumber ||
-                    !this.state.validMessage ||
-                    !this.state.validSecret
-                  }
-                >
-                  Text
-                </Button>
-              </Flow.Item>
-            </Flow.Row>
-          </Flow>
-        </Form>
-      </div>
+      <BrowserRouter>
+        <BandwidthThemeProvider>
+          <Form>
+            <Flow>
+              <Flow.Row>
+                <Flow.Item>
+                  <Label>
+                    Company Phone Number
+                  </Label>
+                </Flow.Item>
+                <Flow.Item>
+                  <Input
+                    type="text"
+                    value={this.state.companyNumber}
+                    onChange={this.onCompanyNumberChange}
+                    placeholder="Phone Number"
+                  />
+                </Flow.Item>
+              </Flow.Row>
+              <Flow.Row>
+                <Flow.Item>
+                  <Label>
+                    Customer Phone Number
+                  </Label>
+                </Flow.Item>
+                <Flow.Item>
+                  <Input
+                    type="text"
+                    value={this.state.customerNumber}
+                    onChange={this.onCustomerNumberChange}
+                    placeholder="Phone Number"
+                  />
+                </Flow.Item>
+              </Flow.Row>
+              <Flow.Row>
+                <Flow.Item>
+                  <Label>
+                    Text Message
+                  </Label>
+                </Flow.Item>
+                <Flow.Item>
+                  <Input
+                    type="text"
+                    value={this.state.message}
+                    onChange={this.onTextMessageChange}
+                    placeholder="Message"
+                  />
+                </Flow.Item>
+              </Flow.Row>
+              <Flow.Row>
+                <Flow.Item>
+                  <Label>
+                    Secret
+                  </Label>
+                </Flow.Item>
+                <Flow.Item>
+                  <Input
+                    type="password"
+                    value={this.state.secret}
+                    onChange={this.onSecretChange}
+                    placeholder="Secret"
+                  />
+                </Flow.Item>
+              </Flow.Row>
+              <Flow.Row>
+                <Flow.Item>
+                  <Button
+                    onClick={this.onTextSubmit}
+                    disabled={
+                      !this.state.validCompanyNumber ||
+                      !this.state.validCustomerNumber ||
+                      !this.state.validMessage ||
+                      !this.state.validSecret
+                    }
+                  >
+                    Text
+                  </Button>
+                </Flow.Item>
+              </Flow.Row>
+            </Flow>
+          </Form>
+        </BandwidthThemeProvider>
+      </BrowserRouter>
     );
   }
 }
