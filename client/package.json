@@ -22,34 +22,9 @@
   },
   "private": true,
   "scripts": {
-    "cypress:version": "cypress version",
-    "cypress:verify": "cypress verify",
-    "cypress:open": "cypress open",
-    "cypress:run": "cypress run",
-    "cypress:run:record": "cypress run --record",
-    "cypress:run:chrome": "cypress run --browser chrome",
-    "cypress:run:headed": "cypress run --headed",
-    "start": "http-server -p 8888 -c-1",
-    "start:ci": "http-server -p 8888 -c-1 --silent",
-    "test": "npm run start & cypress run",
-    "test:ci": "run-p --race start:ci cypress:run",
-    "test:ci:record": "run-p --race start:ci cypress:run:record",
-    "test:ci:chrome": "run-p --race start:ci cypress:run:chrome",
-    "test:ci:headed": "run-p --race start:ci cypress:run:headed",
-    "lint": "eslint --fix cypress/*/*.js"
-  },
-  "dependencies": {
-    "director": "^1.2.0",
-    "http-server": "0.10.0",
-    "react": "^0.13.3",
-    "todomvc-app-css": "2.0.6",
-    "todomvc-common": "cypress-io/todomvc-common#88b7c6359ad4a5097312d8b2a21dd539ce9f4446"
+    "cypress:run": "cypress run"
   },
   "devDependencies": {
-    "cypress": "2.1.0",
-    "eslint": "4.18.2",
-    "eslint-plugin-cypress-dev": "1.1.2",
-    "eslint-plugin-mocha": "4.12.1",
-    "npm-run-all": "4.1.2"
+    "cypress": "2.1.0"
   }
 }
