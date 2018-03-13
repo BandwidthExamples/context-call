@@ -17,22 +17,51 @@ function return_status(http_code, message_body) {
 	}
 }
 
-function call_number(client, number) {
+
+function call_numbers(client, number1, number2, callback) {
+	var c1 = "";
+	console.log("Calling first number...");
 	client.Call.create({
-		from: "+19104271337", // This must be a Catapult number on your account
-		to: number,
+		from: process.env.phoneNumber, // This must be a Catapult number on your account
+		to: number1,
 	})
 	.then((message) => {
 		var return_message = "Started call with ID " + message.id;
 		// callback(null, return_status(200, return_message));
 		console.log(return_message);
+		c1 = message.id;
+		console.log("Calling second number...");
+		
+		client.Call.create({
+			from: process.env.phoneNumber, // This must be a Catapult number on your account
+			to: number2,
+		})
+		.then((message) => {
+			var return_message = "Started call with ID " + message.id;
+			// callback(null, return_status(200, return_message));
+			console.log(return_message);
+			client.Bridge.create({
+				bridgeAudio: true,
+				callIds: [c1, message.id]
+			})
+			.then(function (response) {
+				console.log(response);
+				callback(null, return_status(200, "Started calls"));
+			});
+		})
+		.catch((err) => {
+			console.log(JSON.stringify(err.message));
+			// callback(err.message);
+		});
 	})
 	.catch((err) => {
 		console.log(JSON.stringify(err.message));
 		// callback(err.message);
 	});
+	
 }
 exports.handler = (event, context, callback) => {
+	context.callbackWaitsForEmptyEventLoop = false;
 	console.log(process.env);
 	var Bandwidth_API = require("node-bandwidth");
 	var client = new Bandwidth_API({
@@ -44,30 +73,30 @@ exports.handler = (event, context, callback) => {
 	var return_message = "";
 	console.log("Parsing event: " + JSON.stringify(event));
 	let body = JSON.parse(event.body);
-	if (body.number) {
-		console.log("Got a number");
+	if(!body.secret || body.secret != process.env.secret) {
+		callback(null, return_status(400, "Invalid secret"));
+	}
+	if (body.companyNumber && body.customerNumber) {
+		console.log("Got both numbers");
 		if (body.message) {
-			console.log("Got a message");
+			console.log("Got the message");
 			client.Message.send({
 					from: process.env.phoneNumber, // This must be a Catapult number on your account
-					to: body.number,
+					to: body.customerNumber,
 					text: body.message
 				})
 				.then((message) => {
 					return_message = "Message sent with ID " + message.id;
-					callback(null, return_status(200, return_message));
-					setTimeout(call_number, 60000, client, body.number);
+					setTimeout(call_numbers, 15000, client, body.companyNumber, body.customerNumber, callback);
 				})
 				.catch((err) => {
 					console.log(JSON.stringify(err.message));
 					callback(err.message);
 				});
 		} else {
-			call_number(client, body.number);
+			callback(null, return_status(400, "Please specify a message"));
 		}
 	} else {
-		return_message = "Please specify a number";
-		callback(null, return_status(400, return_message));
+		callback(null, return_status(400, "Please specify both numbers"));
 	}
 };
-
