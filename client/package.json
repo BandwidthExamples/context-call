@@ -19,5 +19,12 @@
   },
   "devDependencies": {
     "jest": "^22.4.0"
+  },
+  "private": true,
+  "scripts": {
+    "cypress:run": "cypress run"
+  },
+  "devDependencies": {
+    "cypress": "2.1.0"
   }
 }
