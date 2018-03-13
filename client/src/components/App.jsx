@@ -146,6 +146,7 @@ class App extends React.Component {
                 </Flow.Item>
                 <Flow.Item>
                   <Input
+                    id="secret-key"
                     type="password"
                     value={this.state.secret}
                     onChange={this.onSecretChange}
