@@ -15,16 +15,13 @@
     "build": "react-scripts build",
     "test": "jest",
     "eject": "react-scripts eject",
-    "deploy": "npm run build && aws s3 cp ./build s3://call-me-maybe/ --recursive"
-  },
-  "devDependencies": {
-    "jest": "^22.4.0"
-  },
-  "private": true,
-  "scripts": {
+    "deploy": "npm run build && aws s3 cp ./build s3://call-me-maybe/ --recursive",
     "cypress:run": "cypress run"
   },
   "devDependencies": {
-    "cypress": "2.1.0"
+    "jest": "^22.4.0",
+    "cypress": "2.1.0",
+    "eslint": "^4.15.0",
+    "eslint-plugin-cypress-dev": "^1.1.2"
   }
 }
