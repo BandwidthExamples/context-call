@@ -18,7 +18,11 @@ function callNumber(number, tag, callback) {
 
 function bridgeCalls(idOne, idTwo, callback) {
 	const bandwidthAPI = require('simple-bandwidth-api');
-	callback("not defined");
+	
+	const postData = JSON.stringify({
+		callIds: [idOne, idTwo]
+	});	
+	bandwidthAPI.post('bridges', postData, callback);
 }
 
 exports.handler = (event, context, callback) => {
