@@ -13,6 +13,14 @@ import CallButton from './call-button/CallButton';
 
 class App extends React.Component {
 
+  static isValidPhoneNumber(number) {
+    return number.match(new RegExp('^[+][0-9]{11}$'));
+  }
+
+  static isValidText(text) {
+    return text.length > 0;
+  }
+
   constructor() {
     super();
     this.state = {
@@ -22,12 +30,11 @@ class App extends React.Component {
       secret: ''
     };
 
-    this.setState = this.setState.bind(this);
     this.onCompanyNumberChange = this.onCompanyNumberChange.bind(this);
     this.onCustomerNumberChange = this.onCustomerNumberChange.bind(this);
     this.onTextMessageChange = this.onTextMessageChange.bind(this);
     this.onSecretChange = this.onSecretChange.bind(this);
-    this.onTextSubmit = this.onTextSubmit.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
   }
 
   onCompanyNumberChange(event) {
@@ -66,8 +73,7 @@ class App extends React.Component {
     });
   }
 
-  onTextSubmit(event, customerNumber) {
-    event.preventDefault();
+  onSubmit(customerNumber) {
     const data = {
       companyNumber: this.state.companyNumber,
       customerNumber: customerNumber,
@@ -76,10 +82,13 @@ class App extends React.Component {
     };
     $.ajax({
       type: 'POST',
-      url: 'https://aed46gt651.execute-api.us-west-2.amazonaws.com/prod/ContextCallV1',
+      url: 'https://requestb.in/1m6jkxm1',
       data: JSON.stringify(data),
       dataType: 'json',
-      crossDomain: true
+      crossDomain: true,
+      success: () => {
+        console.log('Success!');
+      }
     });
   }
 
@@ -129,7 +138,7 @@ class App extends React.Component {
         <Table.Header>Order Number</Table.Header>
         <Table.Header>ETA</Table.Header>
         <Table.Header>Phone Number</Table.Header>
-        <Table.Header>Call</Table.Header>
+        <Table.Header>Text and Call</Table.Header>
       </Table.Row>
     );
 
@@ -141,10 +150,13 @@ class App extends React.Component {
         <Table.Cell>{customer.phone}</Table.Cell>
         <Table.Cell>
           <CallButton
-            companyNumber={this.state.companyNumber}
+            onSubmit={this.onSubmit}
             customerNumber={customer.phone}
-            message={this.state.message}
-            secret={this.state.secret}
+            disabled={
+              !App.isValidPhoneNumber(this.state.companyNumber) ||
+              !App.isValidText(this.state.message) ||
+              !App.isValidText(this.state.secret)
+            }
           />
         </Table.Cell>
       </Table.Row>
