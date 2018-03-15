@@ -86,8 +86,11 @@ class App extends React.Component {
       data: JSON.stringify(data),
       dataType: 'json',
       crossDomain: true,
-      success: () => {
-        console.log('Success!');
+      success: (res) => {
+        console.log('Success: ' + JSON.stringify(res));
+      },
+      error: (err) => {
+        console.log('Error: ' + JSON.stringify(err));
       }
     });
   }
