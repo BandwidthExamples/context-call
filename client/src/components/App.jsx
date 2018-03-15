@@ -1,19 +1,15 @@
 import React from 'react';
 import $ from 'jquery';
-import {
-  BrowserRouter
-} from 'react-router-dom';
+import {BrowserRouter} from 'react-router-dom';
 import {
   BandwidthThemeProvider,
-  Button,
   Flow,
   Form,
   Input,
   Label,
-  Table,
-  SimpleTable,
-  Spacing
+  Table
 } from '@bandwidth/shared-components';
+import CallButton from './call-button/CallButton';
 
 class App extends React.Component {
 
@@ -70,11 +66,11 @@ class App extends React.Component {
     });
   }
 
-  onTextSubmit(event) {
+  onTextSubmit(event, customerNumber) {
     event.preventDefault();
     const data = {
       companyNumber: this.state.companyNumber,
-      customerNumber: this.state.customerNumber,
+      customerNumber: customerNumber,
       message: this.state.message,
       secret: this.state.secret
     };
@@ -127,32 +123,29 @@ class App extends React.Component {
       }
     ];
 
-    const columns = [
-      {name: 'Name'},
-      {name: 'Order Number'},
-      {name: 'ETA'},
-      {name: 'Phone Number'},
-      {name: 'Call'}
-    ];
-
-    const renderRow = (item) => (
+    const headers = (
       <Table.Row>
-        <Table.Cell>{item.name}</Table.Cell>
-        <Table.Cell>{item.order}</Table.Cell>
-        <Table.Cell>{item.eta}</Table.Cell>
-        <Table.Cell>{item.phone}</Table.Cell>
+        <Table.Header>Name</Table.Header>
+        <Table.Header>Order Number</Table.Header>
+        <Table.Header>ETA</Table.Header>
+        <Table.Header>Phone Number</Table.Header>
+        <Table.Header>Call</Table.Header>
+      </Table.Row>
+    );
+
+    const tableBody = data.map((customer) =>
+      <Table.Row key={customer.order}>
+        <Table.Cell>{customer.name}</Table.Cell>
+        <Table.Cell>{customer.order}</Table.Cell>
+        <Table.Cell>{customer.eta}</Table.Cell>
+        <Table.Cell>{customer.phone}</Table.Cell>
         <Table.Cell>
-          <Button
-            id="submit-button"
-            onClick={this.onTextSubmit}
-            disabled={
-              !this.state.validCompanyNumber ||
-              !this.state.validMessage ||
-              !this.state.validSecret
-            }
-          >
-            Text
-          </Button>
+          <CallButton
+            companyNumber={this.state.companyNumber}
+            customerNumber={customer.phone}
+            message={this.state.message}
+            secret={this.state.secret}
+          />
         </Table.Cell>
       </Table.Row>
     );
@@ -182,6 +175,22 @@ class App extends React.Component {
                 <Flow.Row>
                   <Flow.Item>
                     <Label>
+                      Text Message
+                    </Label>
+                  </Flow.Item>
+                  <Flow.Item>
+                    <Input
+                      id="text-message"
+                      type="text"
+                      value={this.state.message}
+                      onChange={this.onTextMessageChange}
+                      placeholder="Message"
+                    />
+                  </Flow.Item>
+                </Flow.Row>
+                <Flow.Row>
+                  <Flow.Item>
+                    <Label>
                       Secret
                     </Label>
                   </Flow.Item>
@@ -198,13 +207,9 @@ class App extends React.Component {
               </Flow>
             </Form>
 
-            <SimpleTable
-              items={data}
-              columns={columns}
-              renderRow={renderRow}
-              renderDetails={(item) => <Spacing>{JSON.stringify(item, null,
-                '\t')}</Spacing>}
-            />
+            <Table headers={headers}>
+              {tableBody}
+            </Table>
           </div>
         </BandwidthThemeProvider>
       </BrowserRouter>
