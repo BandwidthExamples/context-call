@@ -14,7 +14,7 @@ function send_sms(customerNumber, message, companyNumber, delay, callback) {
 		text: message,
 		receiptRequested: 'all', // request SMS delivery reciept
 		callbackUrl: process.env.CALLBACK_WAIT_URL, // the URL of our API endpoint that will handle delaying and then calling
-		tag: JSON.stringify({'delay': delay, 'companyNumber': companyNumber, 'customerNumber': customerNumber}) // send the delay between texting and calling as well as both numbers to call
+		tag: JSON.stringify({'delay': delay, 'companyNumber': companyNumber, 'customerNumber': customerNumber, 'secret': process.env.SECRET, 'request': 'call'}) // send the delay between texting and calling as well as both numbers to call
 	});
 
 	bandwidthAPI.post('messages', postData, callback);

@@ -10,7 +10,7 @@ function callNumber(number, tag, callback) {
 		from: process.env.PHONE_NUMBER,
 		to: number,
 		callbackUrl: process.env.CALLBACK_WAIT_URL, // the URL of our API endpoint that will handle waiting and then calling
-		tag: tag
+		tag: JSON.stringify(tag)
 	});
 
 	bandwidthAPI.post('calls', postData, callback);
