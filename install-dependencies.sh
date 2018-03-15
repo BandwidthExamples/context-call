@@ -10,6 +10,9 @@ npm install
 cd ${TRAVIS_BUILD_DIR}/server/call/
 npm install
 
+cd ${TRAVIS_BUILD_DIR}/server/wait/
+npm install
+
 # restore initial working directory
 # TODO necessary?
 cd ${TRAVIS_BUILD_DIR}/

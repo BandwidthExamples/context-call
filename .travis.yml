@@ -21,10 +21,13 @@ script:
   #Run cypress tests on client
 #  - npm run cypress:run
   # Run tests for the text version of our API
-  - cd ${TRAVIS_BUILD_DIR}/server/text
+  - cd ${TRAVIS_BUILD_DIR}/server/text/
   - jest
   # Run tests for the call version of our API
-  - cd ${TRAVIS_BUILD_DIR}/server/call
+  - cd ${TRAVIS_BUILD_DIR}/server/call/
+  - jest
+  # Run http callback tests
+  - cd ${TRAVIS_BUILD_DIR}/server/wait/
   - jest
 before_deploy:
   - cd ${TRAVIS_BUILD_DIR}/server/local_dependencies/aws-api-gateway-return
@@ -79,5 +82,18 @@ deploy:
       - CALLBACK_WAIT_URL=$AWS_LAMBDA_ENV_CALLBACK_WAIT_URL
     on:
       branch: modular_lambda
+  - provider: lambda
+    function_name: "ContextCallV2Wait"
+    region: "us-west-2"
+    role: "arn:aws:iam::957512267502:role/LambdaDeployment"
+    runtime: "nodejs6.10"
+    handler_name: "handler"
+    zip: "${TRAVIS_BUILD_DIR/server/wait/index.js}"
+    access_key_id: $AWSACCESSKEY
+    secret_access_key: $SECRETACCESSKEY
+    on:
+      branch: modular_lambda
+
 after_deploy:
-  rm ${TRAVIS_BUILD_DIR}/context_call_v2_text.zip
+  rm ${TRAVIS_BUILD_DIR}/server/text/context_call_v2_text.zip
+  rm ${TRAVIS_BUILD_DIR}/server/call/context_call_v2_call.zip
