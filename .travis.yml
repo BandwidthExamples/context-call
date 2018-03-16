@@ -91,13 +91,12 @@ deploy:
     role: "arn:aws:iam::957512267502:role/LambdaDeployment"
     runtime: "nodejs6.10"
     handler_name: "handler"
-    zip: "${TRAVIS_BUILD_DIR/server/wait/context_call_v2_wait.zip"
+    zip: "${TRAVIS_BUILD_DIR}/server/wait/context_call_v2_wait.zip"
     access_key_id: $AWSACCESSKEY
     secret_access_key: $SECRETACCESSKEY
     on:
       branch: modular_lambda
-
 after_deploy:
-  rm ${TRAVIS_BUILD_DIR}/server/text/context_call_v2_text.zip
-  rm ${TRAVIS_BUILD_DIR}/server/call/context_call_v2_call.zip
-  rm ${TRAVIS_BUILD_DIR}/server/wait/context_call_v2_wait.zip
+  - rm ${TRAVIS_BUILD_DIR}/server/text/context_call_v2_text.zip
+  - rm ${TRAVIS_BUILD_DIR}/server/call/context_call_v2_call.zip
+  - rm ${TRAVIS_BUILD_DIR}/server/wait/context_call_v2_wait.zip
