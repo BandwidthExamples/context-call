@@ -44,6 +44,9 @@ before_deploy:
   - rm -r node_modules
   - npm install --production # for lambda zip to not be bloated with dev dependencies
   - zip context_call_v2_call -r node_modules/ index.js
+  # create wait zip
+  - cd ${TRAVIS_BUILD_DIR}/server/wait
+  - zip context_call_v2_wait index.js
 #Deploy to lambda via dpl
 deploy:
   - provider: lambda
@@ -88,7 +91,7 @@ deploy:
     role: "arn:aws:iam::957512267502:role/LambdaDeployment"
     runtime: "nodejs6.10"
     handler_name: "handler"
-    zip: "${TRAVIS_BUILD_DIR/server/wait/index.js}"
+    zip: "${TRAVIS_BUILD_DIR/server/wait/context_call_v2_wait.zip"
     access_key_id: $AWSACCESSKEY
     secret_access_key: $SECRETACCESSKEY
     on:
@@ -97,3 +100,4 @@ deploy:
 after_deploy:
   rm ${TRAVIS_BUILD_DIR}/server/text/context_call_v2_text.zip
   rm ${TRAVIS_BUILD_DIR}/server/call/context_call_v2_call.zip
+  rm ${TRAVIS_BUILD_DIR}/server/wait/context_call_v2_wait.zip
