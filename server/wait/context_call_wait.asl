@@ -1,5 +1,5 @@
 {
-  "Comment": "An example of the Amazon States Language using a choice state.",
+  "Comment": "A State Machine to wait for the specified amount of time then invoke a lambda to callback to a URL",
   "StartAt": "WaitChoice",
   "States": {
     "WaitChoice": {
@@ -37,7 +37,7 @@
     },
     "LambdaCall": {
       "Type": "Task",
-      "Resource": "arn:aws:lambda:region:1337:function:Function-Name",
+      "Resource": "arn:aws:lambda:us-west-2:957512267502:function:ContextCallV2Wait",
       "End": true
     }
   }
