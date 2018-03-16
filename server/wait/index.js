@@ -35,7 +35,7 @@ function http_post(callback_url, requestBody, callback) {
 
 exports.handler = (event, context, callback) => {
 	// Make callback() function like return; i.e., exit after its called
-	// TODO ensure that this is securei
+	// TODO ensure that this is secure
 	const httpResponse = require('aws-api-gateway-return');
 	context.callbackWaitsForEmptyEventLoop = false;
 	
