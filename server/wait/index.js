@@ -1,6 +1,6 @@
 'use strict';
 
-function http_post(callback_url, requestBody, callback_url) {
+function http_post(callback_url, requestBody, callback) {
 	const https = require('https');
 	const url = require('url');
 
