@@ -133,6 +133,17 @@ describe('App', () => {
     const wrapper = shallow(<App/>);
     const instance = wrapper.instance();
 
+    wrapper.setState({
+      companyNumber: '+19875550100',
+      validCompanyNumber: true,
+      customerNumber: '+17895550100',
+      validCustomerNumber: true,
+      message: 'Test Message',
+      validMessage: true,
+      secret: 'Test Secret',
+      validSecret: true
+    });
+
     expect($.ajax.mock.calls.length).toEqual(0);
     instance.onTextSubmit({
       preventDefault: function() {
@@ -140,10 +151,10 @@ describe('App', () => {
     });
     expect($.ajax.mock.calls.length).toEqual(1);
     const expected = {
-      companyNumber: '',
-      customerNumber: '',
-      message: '',
-      secret: ''
+      companyNumber: '+19875550100',
+      customerNumber: '+17895550100',
+      message: 'Test Message',
+      secret: 'Test Secret'
     };
     expect($.ajax.mock.calls[0][0].data).toEqual(JSON.stringify(expected));
   });
