@@ -23,6 +23,7 @@ class App extends React.Component {
       secret: ''
     };
 
+    this.setState = this.setState.bind(this);
     this.onCompanyNumberChange = this.onCompanyNumberChange.bind(this);
     this.onCustomerNumberChange = this.onCustomerNumberChange.bind(this);
     this.onTextMessageChange = this.onTextMessageChange.bind(this);
@@ -79,10 +80,7 @@ class App extends React.Component {
       url: 'https://aed46gt651.execute-api.us-west-2.amazonaws.com/prod/ContextCallV1',
       data: JSON.stringify(data),
       dataType: 'json',
-      crossDomain: true,
-      success: (res) => {
-        console.log(res);
-      }
+      crossDomain: true
     });
   }
 
@@ -100,6 +98,7 @@ class App extends React.Component {
                 </Flow.Item>
                 <Flow.Item>
                   <Input
+                    id="company-number"
                     type="text"
                     value={this.state.companyNumber}
                     onChange={this.onCompanyNumberChange}
@@ -115,6 +114,7 @@ class App extends React.Component {
                 </Flow.Item>
                 <Flow.Item>
                   <Input
+                    id="customer-number"
                     type="text"
                     value={this.state.customerNumber}
                     onChange={this.onCustomerNumberChange}
@@ -130,6 +130,7 @@ class App extends React.Component {
                 </Flow.Item>
                 <Flow.Item>
                   <Input
+                    id="text-message"
                     type="text"
                     value={this.state.message}
                     onChange={this.onTextMessageChange}
@@ -145,6 +146,7 @@ class App extends React.Component {
                 </Flow.Item>
                 <Flow.Item>
                   <Input
+                    id="secret-key"
                     type="password"
                     value={this.state.secret}
                     onChange={this.onSecretChange}
@@ -155,6 +157,7 @@ class App extends React.Component {
               <Flow.Row>
                 <Flow.Item>
                   <Button
+                    id="submit-button"
                     onClick={this.onTextSubmit}
                     disabled={
                       !this.state.validCompanyNumber ||
