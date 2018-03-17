@@ -47,7 +47,7 @@ exports.handler = (event, context, callback) => {
 	// Make callback() function like return; i.e., exit after its called
 	// TODO ensure that this is secure
 	context.callbackWaitsForEmptyEventLoop = false;
-	
-	http_post(event.callback_url, JSON.stringify({body: event.tag}), callback);
+
+	http_post(event.callback_url, JSON.stringify({tag: event.tag}), callback);
 	// TODO check for secret in event.secret
 };

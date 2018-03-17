@@ -6,17 +6,17 @@
       "Type": "Choice",
       "Choices": [
         {
-          "Variable": "$.wait.type",
+          "Variable": "$.waitType",
           "StringEquals": "seconds",
           "Next": "WaitSeconds"
         },
         {
-          "Variable": "$.wait.type",
+          "Variable": "$.waitType",
           "StringEquals": "timestamp",
           "Next": "WaitTimestamp"
         },
         {
-          "Variable": "$.wait.type",
+          "Variable": "$.waitType",
           "StringEquals": "none",
           "Next": "LambdaCall"
         }
@@ -26,13 +26,13 @@
     "WaitTimestamp": {
       "Type": "Wait",
       "Comment": "Waits until `timestamp`: '2016-03-14T01:59:00Z'",
-      "TimestampPath": "$.wait.timestamp",
+      "TimestampPath": "$.waitValue",
       "Next": "LambdaCall"
     },
     "WaitSeconds": {
       "Type": "Wait",
       "Comment": "Waits for `seconds` number of seconds",
-      "SecondsPath": "$.wait.seconds",
+      "SecondsPath": "$.waitValue",
       "Next": "LambdaCall"
     },
     "LambdaCall": {
