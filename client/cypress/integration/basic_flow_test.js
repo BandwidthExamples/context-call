@@ -1,14 +1,21 @@
 describe('Basic Flow Test', function(){
-    it('test1', function(){
+    it('happy_path', function(){
         cy.visit('http://call-me-maybe.s3-website-us-west-2.amazonaws.com/')
+        cy.server()
         cy.get('#company-number')
-            .type('+18186971390')
-        cy.get('#customer-number')
-            .type('+17023429757')
+            .type('+18188793672')
+            .should('have.value', '+18188793672')
         cy.get('#text-message')
             .type('here\'s my number so call me maybe.')
-        cy.get(':nth-child(4) > :nth-child(2) > .FlowItemContent-hJlKhy > .InputStyles-hMJoFY')
+            .should('have.value', 'here\'s my number so call me maybe.')
+        cy.get('#secret-key')
             .type('password')
-        cy.get('#submit-button').click()
+            .should('have.value', 'password')
+        cy.route({
+            method: 'POST',      // Route all POST requests
+            url: '/prod/ContextCallV1',    // THe URL the route is POSTing to
+            response: [200]        // and force the response to be: []
+        })
+        cy.get(':nth-child(6) > :nth-child(5) > #submit-button').click()
     })
 })
