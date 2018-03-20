@@ -19,7 +19,7 @@ deploy:
   region: us-west-2
   local_dir: client/build
   on:
-    branch: master
+    branch: travis-s3-test
 script:
 #Run jest unit tests on client
 - cd ~/build/BandwidthExamples/context-call/client
