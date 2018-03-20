@@ -15,9 +15,8 @@ deploy:
   secret_access_key:
     secure: JzeKLSSc98aGJya+QhvFxVaqr+3jqDPV2/Pazxx+9h0OSU8Xgp4dC1013JWCqaREWlKwFxDyUwPzvWKYqah+huRC72wdsF2ns9HxXH5zLIsQ3irNi0Z1Qb78RDBx+Rk2cyBAxYjpXqlT0qViK1Pqp4rTRzOjAou1A4XOemAqMUw2YPKDXqTifnwSKLPdm+yrn9tTM9u7Ij+xMG5nOT54O1yE0RBeVjcQAy732s7TRy1xZwV5aJkaMl4zoE6Z9s0nL+h0aomwLDcEKJ04lUFT52X4TXU10DX53hQVOZTrF2f7d4mlFp6C/m1q5TLb5l1e6FJUrBIJdfmGH5wF3AJQWUwXq9bnjWdUCEcLPA1OQjS0F6dfJ4WCaCZU1CMFtRz8hs12ZzrUdQno6GhdhlAZebEgAIliJJMDff5QE655N0XHgAYCiYMnCnsZbBp4zethuayzlOjda9EZyOJb//nOx9kbLUVHIIxEiGDcplolrNlVIfM4z2xFGpp/h6hUb42B00QWA4ULTbGf9BC6m0zeqskkrwg15YZxQhH40tJxiwu4kD9eNV3wvjUPPd3Irh2FFVuVdTb/q5tSsCoBoH2/X0Nd6wsaXM4acSagOpgFyGLIahFG6h/IlSUyaw6HjubNxxIhv/nRHu0zT11mqAUIU8yF0sXsV7Ka+gZx+6aULQY=
   bucket: call-me-maybe
-  skip_cleanup: true
   region: us-west-2
-  local_dir: client/build
+  acl: public_read
   on:
     branch: travis-s3-test
 script:
