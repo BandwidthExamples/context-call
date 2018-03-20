@@ -1,23 +1,27 @@
 language: node_js
 node_js:
-  - node
+- node
 cache:
   directories:
-    #Cache Client npm install files
-    - ~/build/BandwidthExamples/context-call/client/.npm
-    - ~/build/BandwidthExamples/context-call/client/node-modules
-
-    #Cache Server npm install files
-    - ~/build/BandwidthExamples/context-call/server/.npm
-    - ~/build/BandwidthExamples/context-call/server/node-modules
-
-install: ./install-dependencies.sh
+  - "~/build/BandwidthExamples/context-call/client/.npm"
+  - "~/build/BandwidthExamples/context-call/client/node-modules"
+  - "~/build/BandwidthExamples/context-call/server/.npm"
+  - "~/build/BandwidthExamples/context-call/server/node-modules"
+install: "./install-dependencies.sh"
+deploy:
+  provider: s3
+  access_key_id:
+    secure: IjHF0uzeBAE4AcNUiMtGDXMTt6rjc0+7fqbwy4a1VkDS0blSaQKkKXaAV8hZOrKHSDXc3hmKwRyn7n8HRh01gj+oKMt1XIpS0GeTGRDnFHK5tLEk9hfZg0YOIQxEKeOxBL+HHK4IpRdCqNUF9DINhUSNT2Q85/GfZM+v/wCBOU95QKgV6GrnT1zoLnlNK2m9e6dKXviJwdj+nhancHluPFs+MAO6iJj9p5f5G40tg3LlYy/TMpVbBDcH4qEIonZb5LFRabdtKG960AQ2P+k4HKWx2OvsxP00uQQRzfxhbfe66mgLDLUDLFN4xblqpYAPYJL/4wsvzMDJvx2VRdmepwUuyre//iqwmECoZ6kLTbxrzKKXc+8Zi0LZHisdWffKwBiG+8o9lLj7d6rY7JI0ki7lSgyuEN+6hwiMQujfALLjmIP1vqwXCwVi2DNDwZan4ntwKrUmum8C4uJHQFOU/ew0RlobVyOu1QlhABfJCaLejnMUc5ya5qyVjSWnAGaMV8d8pgP44PzX5oeHaUupaDpeEajF1O8yVDB/+Efdd/QlcDrz5kp3/gjwGieZ5Gq5jJ5yPIMMf+Zn3974VDCXOcvigojI1J/U3Uw8RQ+DC8GuYkwG+sZ/HeIvGfUz55F5vAqCXdN3F7p/YGNRC7iXfG0kq+Q2RBkPcFKDBcM24mo=
+  secret_access_key:
+    secure: JzeKLSSc98aGJya+QhvFxVaqr+3jqDPV2/Pazxx+9h0OSU8Xgp4dC1013JWCqaREWlKwFxDyUwPzvWKYqah+huRC72wdsF2ns9HxXH5zLIsQ3irNi0Z1Qb78RDBx+Rk2cyBAxYjpXqlT0qViK1Pqp4rTRzOjAou1A4XOemAqMUw2YPKDXqTifnwSKLPdm+yrn9tTM9u7Ij+xMG5nOT54O1yE0RBeVjcQAy732s7TRy1xZwV5aJkaMl4zoE6Z9s0nL+h0aomwLDcEKJ04lUFT52X4TXU10DX53hQVOZTrF2f7d4mlFp6C/m1q5TLb5l1e6FJUrBIJdfmGH5wF3AJQWUwXq9bnjWdUCEcLPA1OQjS0F6dfJ4WCaCZU1CMFtRz8hs12ZzrUdQno6GhdhlAZebEgAIliJJMDff5QE655N0XHgAYCiYMnCnsZbBp4zethuayzlOjda9EZyOJb//nOx9kbLUVHIIxEiGDcplolrNlVIfM4z2xFGpp/h6hUb42B00QWA4ULTbGf9BC6m0zeqskkrwg15YZxQhH40tJxiwu4kD9eNV3wvjUPPd3Irh2FFVuVdTb/q5tSsCoBoH2/X0Nd6wsaXM4acSagOpgFyGLIahFG6h/IlSUyaw6HjubNxxIhv/nRHu0zT11mqAUIU8yF0sXsV7Ka+gZx+6aULQY=
+  bucket: call-me-maybe
+  skip_cleanup: true
+  region: us-west-2
+  local_dir: client/build
+  on:
+    branch: master
 script:
-  #Run jest unit tests on client
-  - cd ~/build/BandwidthExamples/context-call/client
-  - jest
-  #Run cypress tests on client
-#  - npm run cypress:run
-  #Run jest unit tests on server
-  - cd ~/build/BandwidthExamples/context-call/server
-  - jest
+- cd ~/build/BandwidthExamples/context-call/client
+- jest
+- cd ~/build/BandwidthExamples/context-call/server
+- jest
