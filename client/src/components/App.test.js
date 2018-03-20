@@ -1,55 +1,91 @@
 import React from 'react';
 import App from './App';
-import {render, shallow} from 'enzyme';
+import {shallow} from 'enzyme';
 import $ from 'jquery';
+import CallButton from './call-button/CallButton';
 
 jest.mock('jquery', () => ({
   ajax: jest.fn()
 }));
+
+let wrapper;
+let instance;
+
+beforeEach(() => {
+  const data = [
+    {
+      name: 'A',
+      order: '1',
+      eta: '2018-03-20T08:00:00',
+      phone: '+19195550100'
+    },
+    {
+      name: 'B',
+      order: '2',
+      eta: '2018-03-20T08:00:00',
+      phone: '+19195550100'
+    },
+    {
+      name: 'C',
+      order: '3',
+      eta: '2018-03-20T08:00:00',
+      phone: '+19195550100'
+    },
+    {
+      name: 'D',
+      order: '4',
+      eta: '2018-03-20T08:00:00',
+      phone: '+19195550100'
+    }
+  ];
+  wrapper = shallow(<App data={data}/>);
+  instance = wrapper.instance();
+});
 
 test('test runs', () => {
   expect(true);
 });
 
 describe('App', () => {
+  it('defaults the data if none is entered', () => {
+    wrapper = shallow(<App/>);
+    instance = wrapper.instance();
+    expect(instance.getData()).not.toBeUndefined();
+  });
+});
+
+describe('App', () => {
   it('renders a company number field', () => {
-    const wrapper = render(<App/>);
     expect(wrapper.find('#company-number').length).toEqual(1);
   });
 });
 
 describe('App', () => {
-  it('renders a customer number field', () => {
-    const wrapper = render(<App/>);
-    expect(wrapper.find('#customer-number').length).toEqual(1);
+  it('renders a customer table', () => {
+    expect(wrapper.find('#customer-table').length).toEqual(1);
   });
 });
 
 describe('App', () => {
   it('renders a text message field', () => {
-    const wrapper = render(<App/>);
     expect(wrapper.find('#text-message').length).toEqual(1);
   });
 });
 
 describe('App', () => {
   it('renders a text message field', () => {
-    const wrapper = render(<App/>);
     expect(wrapper.find('#secret-key').length).toEqual(1);
   });
 });
 
 describe('App', () => {
-  it('renders a submit button', () => {
-    const wrapper = render(<App/>);
-    expect(wrapper.find('#submit-button').length).toEqual(1);
+  it('renders a submit button for each customer', () => {
+    expect(wrapper.find(CallButton).length).toEqual(4);
   });
 });
 
 describe('App', () => {
   it('updates the company number on change event', () => {
-    const wrapper = shallow(<App/>);
-    const instance = wrapper.instance();
     instance.onCompanyNumberChange({
       target: {
         value: 'Test Company Number'
@@ -61,94 +97,104 @@ describe('App', () => {
 });
 
 describe('App', () => {
-  it('updates the customer number on change event', () => {
-    const wrapper = shallow(<App/>);
-    const instance = wrapper.instance();
-    instance.onCustomerNumberChange({
-      target: {
-        value: 'Test Customer Number'
-      }
-    });
-
-    expect(wrapper.state().customerNumber).toEqual('Test Customer Number');
-  });
-});
-
-describe('App', () => {
   it('updates the text message on change event', () => {
-    const wrapper = shallow(<App/>);
-    const instance = wrapper.instance();
     instance.onTextMessageChange({
       target: {
         value: 'Test Text Message'
       }
     });
-
     expect(wrapper.state().message).toEqual('Test Text Message');
   });
 });
 
 describe('App', () => {
   it('updates the secret on change event', () => {
-    const wrapper = shallow(<App/>);
-    const instance = wrapper.instance();
     instance.onSecretChange({
       target: {
         value: 'Test Secret'
       }
     });
-
     expect(wrapper.state().secret).toEqual('Test Secret');
   });
 });
 
 describe('App', () => {
-  it('button is disabled when nothing is entered', () => {
-    const wrapper = shallow(<App/>);
-    const button = wrapper.find('#submit-button');
-    expect(button.props().disabled).toEqual(true);
+  it('buttons are disabled when nothing is entered', () => {
+    wrapper.setState({
+      companyNumber: '',
+      message: '',
+      secret: ''
+    });
+    const buttons = wrapper.find(CallButton);
+    expect(buttons.length).toEqual(4);
+    for (let i = 0; i < buttons.length; i++) {
+      expect(buttons.at(i).props().disabled).toEqual(true);
+    }
   });
 
-  it('button is enabled when all fields are valid', () => {
-    let wrapper = shallow(<App/>);
-    // const instance = wrapper.instance();
+  it('buttons are disabled when the company number is not entered', () => {
     wrapper.setState({
-      companyNumber: '+15555555556',
-      validCompanyNumber: true,
-      customerNumber: '+15555555555',
-      validCustomerNumber: true,
+      companyNumber: '',
       message: 'Test Msg',
-      validMessage: true,
-      secret: 'Test Secret',
-      validSecret: true
+      secret: 'Test Secret'
     });
+    const buttons = wrapper.find(CallButton);
+    expect(buttons.length).toEqual(4);
+    for (let i = 0; i < buttons.length; i++) {
+      expect(buttons.at(i).props().disabled).toEqual(true);
+    }
+  });
 
-    const button = wrapper.find('#submit-button');
-    expect(button.props().disabled).toEqual(false);
+  it('buttons are disabled when the message is not entered', () => {
+    wrapper.setState({
+      companyNumber: '+19875550100',
+      message: '',
+      secret: 'Test Secret'
+    });
+    const buttons = wrapper.find(CallButton);
+    expect(buttons.length).toEqual(4);
+    for (let i = 0; i < buttons.length; i++) {
+      expect(buttons.at(i).props().disabled).toEqual(true);
+    }
+  });
+
+  it('buttons are disabled when the secret is not entered', () => {
+    wrapper.setState({
+      companyNumber: '+19875550100',
+      message: 'Test Msg',
+      secret: ''
+    });
+    const buttons = wrapper.find(CallButton);
+    expect(buttons.length).toEqual(4);
+    for (let i = 0; i < buttons.length; i++) {
+      expect(buttons.at(i).props().disabled).toEqual(true);
+    }
+  });
+
+  it('buttons are enabled when all fields are valid', () => {
+    wrapper.setState({
+      companyNumber: '+19875550100',
+      message: 'Test Msg',
+      secret: 'Test Secret'
+    });
+    const buttons = wrapper.find(CallButton);
+    expect(buttons.length).toEqual(4);
+    for (let i = 0; i < buttons.length; i++) {
+      expect(buttons.at(i).props().disabled).toEqual(false);
+    }
   });
 });
 
 describe('App', () => {
   it('submits and sends the field data', () => {
-    const wrapper = shallow(<App/>);
-    const instance = wrapper.instance();
-
     wrapper.setState({
       companyNumber: '+19875550100',
-      validCompanyNumber: true,
-      customerNumber: '+17895550100',
-      validCustomerNumber: true,
       message: 'Test Message',
-      validMessage: true,
-      secret: 'Test Secret',
-      validSecret: true
+      secret: 'Test Secret'
     });
 
     expect($.ajax.mock.calls.length).toEqual(0);
-    instance.onTextSubmit({
-      preventDefault: function() {
-      }
-    });
+    instance.onSubmit('+17895550100');
     expect($.ajax.mock.calls.length).toEqual(1);
     const expected = {
       companyNumber: '+19875550100',
@@ -157,5 +203,12 @@ describe('App', () => {
       secret: 'Test Secret'
     };
     expect($.ajax.mock.calls[0][0].data).toEqual(JSON.stringify(expected));
+
+    try {
+      $.ajax.mock.calls[0][0].success('Success');
+      $.ajax.mock.calls[0][0].error('Error');
+    } catch (error) {
+      fail();
+    }
   });
 });

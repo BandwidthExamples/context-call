@@ -26,7 +26,6 @@ class CallButton extends React.Component {
 
   render() {
     return <Button
-      id="submit-button"
       onClick={this.onSubmit}
       disabled={
         this.props.disabled ||

@@ -30,11 +30,57 @@ class App extends React.Component {
       secret: ''
     };
 
+    this.data = [
+      {
+        name: 'David Davidson I',
+        order: 'ABCDEF–123',
+        eta: '2018-03-20T08:00:00',
+        phone: '+19195550100'
+      },
+      {
+        name: 'Karl Karlson',
+        order: 'ABCDEF–124',
+        eta: '2018-03-20T10:00:00',
+        phone: '+19195550101'
+      },
+      {
+        name: 'James Jameson',
+        order: 'ABCDEF–125',
+        eta: '2018-03-20T12:00:00',
+        phone: '+19195550102'
+      },
+      {
+        name: 'Jack Jackson',
+        order: 'ABCDEF–126',
+        eta: '2018-03-21T11:00:00',
+        phone: '+19195550103'
+      },
+      {
+        name: 'David Davidson II',
+        order: 'ABCDEF–127',
+        eta: '2018-03-21T18:30:00',
+        phone: '+19195550104'
+      },
+      {
+        name: 'John Johnson',
+        order: 'ABCDEF–128',
+        eta: '2018-03-21T19:00:00',
+        phone: '+19195550105'
+      }
+    ];
+
+    this.getData = this.getData.bind(this);
     this.onCompanyNumberChange = this.onCompanyNumberChange.bind(this);
-    this.onCustomerNumberChange = this.onCustomerNumberChange.bind(this);
     this.onTextMessageChange = this.onTextMessageChange.bind(this);
     this.onSecretChange = this.onSecretChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
+  }
+
+  getData() {
+    if (!this.props.data) {
+      return this.data;
+    }
+    return this.props.data;
   }
 
   onCompanyNumberChange(event) {
@@ -43,15 +89,6 @@ class App extends React.Component {
       ...this.state,
       companyNumber: number,
       validCompanyNumber: number.match(new RegExp('^[+][0-9]{11}$'))
-    });
-  }
-
-  onCustomerNumberChange(event) {
-    const number = event.target.value;
-    this.setState({
-      ...this.state,
-      customerNumber: number,
-      validCustomerNumber: number.match(new RegExp('^[+][0-9]{11}$'))
     });
   }
 
@@ -96,45 +133,6 @@ class App extends React.Component {
   }
 
   render() {
-    const data = [
-      {
-        name: 'David Davidson I',
-        order: 'ABCDEF–123',
-        eta: '2018-03-20T08:00:00',
-        phone: '+19195550100'
-      },
-      {
-        name: 'Karl Karlson',
-        order: 'ABCDEF–124',
-        eta: '2018-03-20T10:00:00',
-        phone: '+19195550101'
-      },
-      {
-        name: 'James Jameson',
-        order: 'ABCDEF–125',
-        eta: '2018-03-20T12:00:00',
-        phone: '+19195550102'
-      },
-      {
-        name: 'Jack Jackson',
-        order: 'ABCDEF–126',
-        eta: '2018-03-21T11:00:00',
-        phone: '+19195550103'
-      },
-      {
-        name: 'David Davidson II',
-        order: 'ABCDEF–127',
-        eta: '2018-03-21T18:30:00',
-        phone: '+19195550104'
-      },
-      {
-        name: 'John Johnson',
-        order: 'ABCDEF–128',
-        eta: '2018-03-21T19:00:00',
-        phone: '+19195550105'
-      }
-    ];
-
     const headers = (
       <Table.Row>
         <Table.Header>Name</Table.Header>
@@ -145,7 +143,7 @@ class App extends React.Component {
       </Table.Row>
     );
 
-    const tableBody = data.map((customer) =>
+    const tableBody = this.getData().map((customer) =>
       <Table.Row key={customer.order}>
         <Table.Cell>{customer.name}</Table.Cell>
         <Table.Cell>{customer.order}</Table.Cell>
@@ -222,7 +220,7 @@ class App extends React.Component {
               </Flow>
             </Form>
 
-            <Table headers={headers}>
+            <Table id="customer-table" headers={headers}>
               {tableBody}
             </Table>
           </div>
