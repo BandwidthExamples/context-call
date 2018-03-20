@@ -21,7 +21,11 @@ deploy:
   on:
     branch: master
 script:
+#Run jest unit tests on client
 - cd ~/build/BandwidthExamples/context-call/client
 - jest
+#Run cypress tests on client
+#- npm run cypress:run
+#Run jest unit tests on server
 - cd ~/build/BandwidthExamples/context-call/server
 - jest
