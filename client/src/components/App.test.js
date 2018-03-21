@@ -50,7 +50,7 @@ describe('App', () => {
   it('defaults the data if none is entered', () => {
     wrapper = shallow(<App/>);
     instance = wrapper.instance();
-    expect(instance.getData()).not.toBeUndefined();
+    expect(instance.state.data).not.toBeUndefined();
   });
 });
 
@@ -188,17 +188,17 @@ describe('App', () => {
 describe('App', () => {
   it('submits and sends the field data', () => {
     wrapper.setState({
-      companyNumber: '+19875550100',
+      companyNumber: '+19875550120',
       message: 'Test Message',
       secret: 'Test Secret'
     });
 
     expect($.ajax.mock.calls.length).toEqual(0);
-    instance.onSubmit('+17895550100');
+    instance.onSubmit('+19195550100');
     expect($.ajax.mock.calls.length).toEqual(1);
     const expected = {
-      companyNumber: '+19875550100',
-      customerNumber: '+17895550100',
+      companyNumber: '+19875550120',
+      customerNumber: '+19195550100',
       message: 'Test Message',
       secret: 'Test Secret'
     };
