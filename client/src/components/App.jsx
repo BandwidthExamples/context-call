@@ -7,7 +7,8 @@ import {
   Form,
   Input,
   Label,
-  Table
+  Table,
+  Icon
 } from '@bandwidth/shared-components';
 import CallButton from './call-button/CallButton';
 
@@ -21,16 +22,16 @@ class App extends React.Component {
     return text.length > 0;
   }
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       companyNumber: '',
       customerNumber: '',
       message: '',
-      secret: ''
+      secret: '',
     };
 
-    this.data = [
+    const defaultData = [
       {
         name: 'David Davidson I',
         order: 'ABCDEF–123',
@@ -69,18 +70,16 @@ class App extends React.Component {
       }
     ];
 
-    this.getData = this.getData.bind(this);
+    if (this.props.data) {
+      this.state.data = this.props.data;
+    } else {
+      this.state.data = defaultData;
+    }
+
     this.onCompanyNumberChange = this.onCompanyNumberChange.bind(this);
     this.onTextMessageChange = this.onTextMessageChange.bind(this);
     this.onSecretChange = this.onSecretChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
-  }
-
-  getData() {
-    if (!this.props.data) {
-      return this.data;
-    }
-    return this.props.data;
   }
 
   onCompanyNumberChange(event) {
@@ -117,6 +116,18 @@ class App extends React.Component {
       message: this.state.message,
       secret: this.state.secret
     };
+
+    for (const customer of this.state.data) {
+      if (customer.phone === customerNumber) {
+        customer.sent = true;
+      }
+    }
+    this.setState({
+      ...this.state,
+      data: this.state.data
+    });
+
+    console.log('POST...');
     $.ajax({
       type: 'POST',
       url: 'https://aed46gt651.execute-api.us-west-2.amazonaws.com/prod/ContextCallV1',
@@ -143,7 +154,7 @@ class App extends React.Component {
       </Table.Row>
     );
 
-    const tableBody = this.getData().map((customer) =>
+    const tableBody = this.state.data.map((customer) =>
       <Table.Row key={customer.order}>
         <Table.Cell>{customer.name}</Table.Cell>
         <Table.Cell>{customer.order}</Table.Cell>
@@ -159,6 +170,16 @@ class App extends React.Component {
               !App.isValidText(this.state.secret)
             }
           />
+          {
+            customer.sent ?
+            <Icon style={{'marginLeft': '10px'}} name="message"/> :
+            null
+          }
+          {
+            customer.sent ?
+            <Icon name="checkmark"/> :
+            null
+          }
         </Table.Cell>
       </Table.Row>
     );
