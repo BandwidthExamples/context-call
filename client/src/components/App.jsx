@@ -1,34 +1,85 @@
 import React from 'react';
 import $ from 'jquery';
-import {
-  BrowserRouter,
-} from 'react-router-dom'
+import {BrowserRouter} from 'react-router-dom';
 import {
   BandwidthThemeProvider,
-  Button,
   Flow,
   Form,
   Input,
-  Label
+  Label,
+  Table,
+  Icon
 } from '@bandwidth/shared-components';
+import CallButton from './call-button/CallButton';
 
 class App extends React.Component {
 
-  constructor() {
-    super();
+  static isValidPhoneNumber(number) {
+    return number.match(new RegExp('^[+][0-9]{11}$'));
+  }
+
+  static isValidText(text) {
+    return text.length > 0;
+  }
+
+  constructor(props) {
+    super(props);
     this.state = {
       companyNumber: '',
       customerNumber: '',
       message: '',
-      secret: ''
+      secret: '',
     };
 
-    this.setState = this.setState.bind(this);
+    const defaultData = [
+      {
+        name: 'David Davidson I',
+        order: 'ABCDEF–123',
+        eta: '2018-03-20T08:00:00',
+        phone: '+19195550100'
+      },
+      {
+        name: 'Karl Karlson',
+        order: 'ABCDEF–124',
+        eta: '2018-03-20T10:00:00',
+        phone: '+19195550101'
+      },
+      {
+        name: 'James Jameson',
+        order: 'ABCDEF–125',
+        eta: '2018-03-20T12:00:00',
+        phone: '+19195550102'
+      },
+      {
+        name: 'Jack Jackson',
+        order: 'ABCDEF–126',
+        eta: '2018-03-21T11:00:00',
+        phone: '+19195550103'
+      },
+      {
+        name: 'David Davidson II',
+        order: 'ABCDEF–127',
+        eta: '2018-03-21T18:30:00',
+        phone: '+19195550104'
+      },
+      {
+        name: 'John Johnson',
+        order: 'ABCDEF–128',
+        eta: '2018-03-21T19:00:00',
+        phone: '+19195550105'
+      }
+    ];
+
+    if (this.props.data) {
+      this.state.data = this.props.data;
+    } else {
+      this.state.data = defaultData;
+    }
+
     this.onCompanyNumberChange = this.onCompanyNumberChange.bind(this);
-    this.onCustomerNumberChange = this.onCustomerNumberChange.bind(this);
     this.onTextMessageChange = this.onTextMessageChange.bind(this);
     this.onSecretChange = this.onSecretChange.bind(this);
-    this.onTextSubmit = this.onTextSubmit.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
   }
 
   onCompanyNumberChange(event) {
@@ -37,15 +88,6 @@ class App extends React.Component {
       ...this.state,
       companyNumber: number,
       validCompanyNumber: number.match(new RegExp('^[+][0-9]{11}$'))
-    });
-  }
-
-  onCustomerNumberChange(event) {
-    const number = event.target.value;
-    this.setState({
-      ...this.state,
-      customerNumber: number,
-      validCustomerNumber: number.match(new RegExp('^[+][0-9]{11}$'))
     });
   }
 
@@ -67,111 +109,142 @@ class App extends React.Component {
     });
   }
 
-  onTextSubmit(event) {
-    event.preventDefault();
+  onSubmit(customerNumber) {
     const data = {
       companyNumber: this.state.companyNumber,
-      customerNumber: this.state.customerNumber,
+      customerNumber: customerNumber,
       message: this.state.message,
       secret: this.state.secret
     };
+
+    for (const customer of this.state.data) {
+      if (customer.phone === customerNumber) {
+        customer.sent = true;
+      }
+    }
+    this.setState({
+      ...this.state,
+      data: this.state.data
+    });
+
+    console.log('POST...');
     $.ajax({
       type: 'POST',
       url: 'https://aed46gt651.execute-api.us-west-2.amazonaws.com/prod/ContextCallV1',
       data: JSON.stringify(data),
       dataType: 'json',
-      crossDomain: true
+      crossDomain: true,
+      success: (res) => {
+        console.log('Success: ' + JSON.stringify(res));
+      },
+      error: (err) => {
+        console.log('Error: ' + JSON.stringify(err));
+      }
     });
   }
 
   render() {
+    const headers = (
+      <Table.Row>
+        <Table.Header>Name</Table.Header>
+        <Table.Header>Order Number</Table.Header>
+        <Table.Header>ETA</Table.Header>
+        <Table.Header>Phone Number</Table.Header>
+        <Table.Header>Text and Call</Table.Header>
+      </Table.Row>
+    );
+
+    const tableBody = this.state.data.map((customer) =>
+      <Table.Row key={customer.order}>
+        <Table.Cell>{customer.name}</Table.Cell>
+        <Table.Cell>{customer.order}</Table.Cell>
+        <Table.Cell>{customer.eta}</Table.Cell>
+        <Table.Cell>{customer.phone}</Table.Cell>
+        <Table.Cell>
+          <CallButton
+            onSubmit={this.onSubmit}
+            customerNumber={customer.phone}
+            disabled={
+              !App.isValidPhoneNumber(this.state.companyNumber) ||
+              !App.isValidText(this.state.message) ||
+              !App.isValidText(this.state.secret)
+            }
+          />
+          {
+            customer.sent ?
+            <Icon style={{'marginLeft': '10px'}} name="message"/> :
+            null
+          }
+          {
+            customer.sent ?
+            <Icon name="checkmark"/> :
+            null
+          }
+        </Table.Cell>
+      </Table.Row>
+    );
+
     return (
       <BrowserRouter>
         <BandwidthThemeProvider>
-          <Form>
-            <Flow>
-              <Flow.Row>
-                <Flow.Item>
-                  <Label>
-                    Company Phone Number
-                  </Label>
-                </Flow.Item>
-                <Flow.Item>
-                  <Input
-                    id="company-number"
-                    type="text"
-                    value={this.state.companyNumber}
-                    onChange={this.onCompanyNumberChange}
-                    placeholder="Phone Number"
-                  />
-                </Flow.Item>
-              </Flow.Row>
-              <Flow.Row>
-                <Flow.Item>
-                  <Label>
-                    Customer Phone Number
-                  </Label>
-                </Flow.Item>
-                <Flow.Item>
-                  <Input
-                    id="customer-number"
-                    type="text"
-                    value={this.state.customerNumber}
-                    onChange={this.onCustomerNumberChange}
-                    placeholder="Phone Number"
-                  />
-                </Flow.Item>
-              </Flow.Row>
-              <Flow.Row>
-                <Flow.Item>
-                  <Label>
-                    Text Message
-                  </Label>
-                </Flow.Item>
-                <Flow.Item>
-                  <Input
-                    id="text-message"
-                    type="text"
-                    value={this.state.message}
-                    onChange={this.onTextMessageChange}
-                    placeholder="Message"
-                  />
-                </Flow.Item>
-              </Flow.Row>
-              <Flow.Row>
-                <Flow.Item>
-                  <Label>
-                    Secret
-                  </Label>
-                </Flow.Item>
-                <Flow.Item>
-                  <Input
-                    id="secret-key"
-                    type="password"
-                    value={this.state.secret}
-                    onChange={this.onSecretChange}
-                    placeholder="Secret"
-                  />
-                </Flow.Item>
-              </Flow.Row>
-              <Flow.Row>
-                <Flow.Item>
-                  <Button
-                    id="submit-button"
-                    onClick={this.onTextSubmit}
-                    disabled={
-                      !this.state.validCompanyNumber ||
-                      !this.state.validCustomerNumber ||
-                      !this.state.validMessage ||
-                      !this.state.validSecret
-                    }
-                  >
-                    Text
-                  </Button>
-                </Flow.Item>
-              </Flow.Row>
-            </Flow>
-          </Form>
+          <div>
+            <Form>
+              <Flow>
+                <Flow.Row>
+                  <Flow.Item>
+                    <Label>
+                      Company Phone Number
+                    </Label>
+                  </Flow.Item>
+                  <Flow.Item>
+                    <Input
+                      id="company-number"
+                      type="text"
+                      value={this.state.companyNumber}
+                      onChange={this.onCompanyNumberChange}
+                      placeholder="Phone Number"
+                    />
+                  </Flow.Item>
+                </Flow.Row>
+                <Flow.Row>
+                  <Flow.Item>
+                    <Label>
+                      Text Message
+                    </Label>
+                  </Flow.Item>
+                  <Flow.Item>
+                    <Input
+                      id="text-message"
+                      type="text"
+                      value={this.state.message}
+                      onChange={this.onTextMessageChange}
+                      placeholder="Message"
+                    />
+                  </Flow.Item>
+                </Flow.Row>
+                <Flow.Row>
+                  <Flow.Item>
+                    <Label>
+                      Secret
+                    </Label>
+                  </Flow.Item>
+                  <Flow.Item>
+                    <Input
+                      id="secret-key"
+                      type="password"
+                      value={this.state.secret}
+                      onChange={this.onSecretChange}
+                      placeholder="Secret"
+                    />
+                  </Flow.Item>
+                </Flow.Row>
+              </Flow>
+            </Form>
+
+            <Table id="customer-table" headers={headers}>
+              {tableBody}
+            </Table>
+          </div>
         </BandwidthThemeProvider>
       </BrowserRouter>
     );
