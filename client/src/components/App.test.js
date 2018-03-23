@@ -23,19 +23,19 @@ beforeEach(() => {
       name: 'B',
       order: '2',
       eta: '2018-03-20T08:00:00',
-      phone: '+19195550100'
+      phone: '+19195550101'
     },
     {
       name: 'C',
       order: '3',
       eta: '2018-03-20T08:00:00',
-      phone: '+19195550100'
+      phone: '+19195550102'
     },
     {
       name: 'D',
       order: '4',
       eta: '2018-03-20T08:00:00',
-      phone: '+19195550100'
+      phone: '+19195550103'
     }
   ];
   wrapper = shallow(<App data={data}/>);
