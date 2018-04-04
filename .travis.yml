@@ -54,7 +54,7 @@ before_deploy:
   - zip context_call_v2_wait index.js
   # create orders-get zip
   - cd ${TRAVIS_BUILD_DIR}/server/orders-get
-  - zip context_call_v2_orders-get index.js
+  - zip context_call_v2_orders-get -r node_modules/ index.js
 #Deploy to lambda via dpl
 deploy:
   - provider: lambda
