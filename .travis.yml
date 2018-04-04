@@ -32,8 +32,8 @@ script:
   - cd ${TRAVIS_BUILD_DIR}/server/wait/
   - jest
   # Run tests for getting orders from the database
-    - cd ${TRAVIS_BUILD_DIR}/server/orders-get/
-    - jest
+  - cd ${TRAVIS_BUILD_DIR}/server/orders-get/
+  - jest
 before_deploy:
   - cd ${TRAVIS_BUILD_DIR}/server/local_dependencies/aws-api-gateway-return
   - npm install --production
@@ -53,8 +53,8 @@ before_deploy:
   - cd ${TRAVIS_BUILD_DIR}/server/wait
   - zip context_call_v2_wait index.js
   # create orders-get zip
-    - cd ${TRAVIS_BUILD_DIR}/server/orders-get
-    - zip context_call_v2_orders_get index.js
+  - cd ${TRAVIS_BUILD_DIR}/server/orders-get
+  - zip context_call_v2_orders_get index.js
 #Deploy to lambda via dpl
 deploy:
   - provider: lambda
