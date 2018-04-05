@@ -82,7 +82,7 @@ deploy:
       - USER_ID=$AWS_LAMBDA_ENV_USER_ID
       - CALLBACK_WAIT_URL=$AWS_LAMBDA_ENV_CALLBACK_WAIT_URL
     on:
-      branch: database-lambda
+      branch: master
   - provider: lambda
     function_name: "ContextCallV2Call"
     region: "us-west-2"
@@ -100,7 +100,7 @@ deploy:
       - USER_ID=$AWS_LAMBDA_ENV_USER_ID
       - CALLBACK_WAIT_URL=$AWS_LAMBDA_ENV_CALLBACK_WAIT_URL
     on:
-      branch: database-lambda
+      branch: master
   - provider: lambda
     function_name: "ContextCallV2Wait"
     region: "us-west-2"
@@ -111,7 +111,7 @@ deploy:
     access_key_id: $AWSACCESSKEY
     secret_access_key: $SECRETACCESSKEY
     on:
-      branch: database-lambda
+      branch: master
   - provider: lambda
     function_name: "ContextCallV2OrdersGet"
     region: "us-west-2"
@@ -124,7 +124,7 @@ deploy:
     environment_variables:
       - SECRET=$AWS_LAMBDA_ENV_SECRET
     on:
-      branch: database-lambda
+      branch: master
   - provider: lambda
     function_name: "ContextCallV2OrdersAdd"
     region: "us-west-2"
@@ -137,7 +137,7 @@ deploy:
     environment_variables:
       - SECRET=$AWS_LAMBDA_ENV_SECRET
     on:
-      branch: database-lambda
+      branch: master
 after_deploy:
   - rm ${TRAVIS_BUILD_DIR}/server/text/context_call_v2_text.zip
   - rm ${TRAVIS_BUILD_DIR}/server/call/context_call_v2_call.zip
