@@ -14,10 +14,11 @@ function getOrders(callback) {
 
   docClient.scan(params, (err, data) => {
     if (err) {
-      console.error('Unable to scan the table. Error: ', JSON.stringify(err, null, 2));
+      console.error('Unable to scan the table. Error: ',
+        JSON.stringify(err, null, 2));
     } else {
       console.log('Scan succeeded.');
-      if (typeof data.LastEvaluatedKey !== "undefined") {
+      if (typeof data.LastEvaluatedKey !== 'undefined') {
         console.log('Not all data scanned.');
       }
       callback(null, httpResponse.create(200, data.Items));
@@ -28,20 +29,20 @@ function getOrders(callback) {
 exports.handler = (event, context, callback) => {
   context.callbackWaitsForEmptyEventLoop = false;
 
-  if (!event['queryStringParameters']) {
-    callback(null, httpResponse.create(401, 'invalid/unspecified query parameters'));
-  }
-  const secret = event['queryStringParameters']['secret'];
-  if (!secret || secret !== process.env.SECRET) {
-    callback(null, httpResponse.create(401, 'invalid/unspecified secret'));
-  }
+  // if (!event['queryStringParameters']) {
+  //   callback(null, httpResponse.create(401, 'invalid/unspecified query parameters'));
+  // }
+  // const secret = event['queryStringParameters']['secret'];
+  // if (!secret || secret !== process.env.SECRET) {
+  //   callback(null, httpResponse.create(401, 'invalid/unspecified secret'));
+  // }
 
-  switch (event['queryStringParameters']['request']) {
-    case 'ping':
-      callback(null, httpResponse.create(200, 'ready'));
-      break;
-    case 'getOrders':
-      getOrders(callback);
-      break;
-  }
+  // switch (event['queryStringParameters']['request']) {
+  //   case 'ping':
+  //     callback(null, httpResponse.create(200, 'ready'));
+  //     break;
+  //   case 'getOrders':
+  getOrders(callback);
+  // break;
+  // }
 };
