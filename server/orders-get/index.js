@@ -28,12 +28,15 @@ function getOrders(callback) {
 exports.handler = (event, context, callback) => {
   context.callbackWaitsForEmptyEventLoop = false;
 
-  const body = JSON.parse(event.body);
-  if (!body.secret || body.secret !== process.env.SECRET) {
+  if (!event['queryStringParameters']) {
+    callback(null, httpResponse.create(401, 'invalid/unspecified query parameters'));
+  }
+  const secret = event['queryStringParameters']['secret'];
+  if (!secret || secret !== process.env.SECRET) {
     callback(null, httpResponse.create(401, 'invalid/unspecified secret'));
   }
 
-  switch (body.request) {
+  switch (event['queryStringParameters']['request']) {
     case 'ping':
       callback(null, httpResponse.create(200, 'ready'));
       break;
