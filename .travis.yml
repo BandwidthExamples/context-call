@@ -12,6 +12,10 @@ cache:
     - ${TRAVIS_BUILD_DIR}/server/text/node-modules
     - ${TRAVIS_BUILD_DIR}/server/call/.npm
     - ${TRAVIS_BUILD_DIR}/server/call/node-modules
+    - ${TRAVIS_BUILD_DIR}/server/orders-get/.npm
+    - ${TRAVIS_BUILD_DIR}/server/orders-get/node-modules
+    - ${TRAVIS_BUILD_DIR}/server/orders-add/.npm
+    - ${TRAVIS_BUILD_DIR}/server/orders-add/node-modules
 
 install: ${TRAVIS_BUILD_DIR}/install-dependencies.sh
 script:
@@ -28,6 +32,12 @@ script:
   - jest
   # Run http callback tests
   - cd ${TRAVIS_BUILD_DIR}/server/wait/
+  - jest
+  # Run tests for getting orders from the database
+  - cd ${TRAVIS_BUILD_DIR}/server/orders-get/
+  - jest
+  # Run tests for getting orders from the database
+  - cd ${TRAVIS_BUILD_DIR}/server/orders-add/
   - jest
 before_deploy:
   - cd ${TRAVIS_BUILD_DIR}/server/local_dependencies/aws-api-gateway-return
@@ -47,6 +57,12 @@ before_deploy:
   # create wait zip
   - cd ${TRAVIS_BUILD_DIR}/server/wait
   - zip context_call_v2_wait index.js
+  # create orders-get zip
+  - cd ${TRAVIS_BUILD_DIR}/server/orders-get
+  - zip context_call_v2_orders-get -r node_modules/ index.js
+  # create orders-add zip
+  - cd ${TRAVIS_BUILD_DIR}/server/orders-add
+  - zip context_call_v2_orders-add -r node_modules/ index.js
 #Deploy to lambda via dpl
 deploy:
   - provider: lambda
@@ -66,7 +82,7 @@ deploy:
       - USER_ID=$AWS_LAMBDA_ENV_USER_ID
       - CALLBACK_WAIT_URL=$AWS_LAMBDA_ENV_CALLBACK_WAIT_URL
     on:
-      branch: modular_lambda
+      branch: master
   - provider: lambda
     function_name: "ContextCallV2Call"
     region: "us-west-2"
@@ -84,7 +100,7 @@ deploy:
       - USER_ID=$AWS_LAMBDA_ENV_USER_ID
       - CALLBACK_WAIT_URL=$AWS_LAMBDA_ENV_CALLBACK_WAIT_URL
     on:
-      branch: modular_lambda
+      branch: master
   - provider: lambda
     function_name: "ContextCallV2Wait"
     region: "us-west-2"
@@ -95,8 +111,36 @@ deploy:
     access_key_id: $AWSACCESSKEY
     secret_access_key: $SECRETACCESSKEY
     on:
-      branch: modular_lambda
+      branch: master
+  - provider: lambda
+    function_name: "ContextCallV2OrdersGet"
+    region: "us-west-2"
+    role: "arn:aws:iam::957512267502:role/LambdaDeployment"
+    runtime: "nodejs6.10"
+    handler_name: "handler"
+    zip: "${TRAVIS_BUILD_DIR}/server/orders-get/context_call_v2_orders-get.zip"
+    access_key_id: $AWSACCESSKEY
+    secret_access_key: $SECRETACCESSKEY
+    environment_variables:
+      - SECRET=$AWS_LAMBDA_ENV_SECRET
+    on:
+      branch: master
+  - provider: lambda
+    function_name: "ContextCallV2OrdersAdd"
+    region: "us-west-2"
+    role: "arn:aws:iam::957512267502:role/LambdaDeployment"
+    runtime: "nodejs6.10"
+    handler_name: "handler"
+    zip: "${TRAVIS_BUILD_DIR}/server/orders-add/context_call_v2_orders-add.zip"
+    access_key_id: $AWSACCESSKEY
+    secret_access_key: $SECRETACCESSKEY
+    environment_variables:
+      - SECRET=$AWS_LAMBDA_ENV_SECRET
+    on:
+      branch: master
 after_deploy:
   - rm ${TRAVIS_BUILD_DIR}/server/text/context_call_v2_text.zip
   - rm ${TRAVIS_BUILD_DIR}/server/call/context_call_v2_call.zip
   - rm ${TRAVIS_BUILD_DIR}/server/wait/context_call_v2_wait.zip
+  - rm ${TRAVIS_BUILD_DIR}/server/orders-get/context_call_v2_orders-get.zip
+  - rm ${TRAVIS_BUILD_DIR}/server/orders-add/context_call_v2_orders-add.zip
