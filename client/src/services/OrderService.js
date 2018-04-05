@@ -19,7 +19,7 @@ export class OrderService {
             orders[i] = {
               name: order['name'],
               order: order['orderId'],
-              eta: 'Random ' + Math.floor(Math.random() * 1000),
+              eta: order['eta'],
               phone: '+1' + order['phoneNumber']
             };
           }
