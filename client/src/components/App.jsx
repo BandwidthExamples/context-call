@@ -11,6 +11,7 @@ import {
   Icon
 } from '@bandwidth/shared-components';
 import CallButton from './call-button/CallButton';
+import {OrderService} from '../services/OrderService';
 
 class App extends React.Component {
 
@@ -28,9 +29,8 @@ class App extends React.Component {
       companyNumber: '',
       customerNumber: '',
       message: '',
-      secret: '',
+      secret: ''
     };
-
     const defaultData = [
       {
         name: 'David Davidson I',
@@ -74,6 +74,16 @@ class App extends React.Component {
       this.state.data = this.props.data;
     } else {
       this.state.data = defaultData;
+      OrderService.getOrders()
+        .then(data => {
+          this.setState({
+            ...this.state,
+            data: data
+          });
+        })
+        .catch(err => {
+          console.error(err);
+        });
     }
 
     this.onCompanyNumberChange = this.onCompanyNumberChange.bind(this);
@@ -172,13 +182,13 @@ class App extends React.Component {
           />
           {
             customer.sent ?
-            <Icon style={{'marginLeft': '10px'}} name="message"/> :
-            null
+              <Icon style={{'marginLeft': '10px'}} name="message"/> :
+              null
           }
           {
             customer.sent ?
-            <Icon name="checkmark"/> :
-            null
+              <Icon name="checkmark"/> :
+              null
           }
         </Table.Cell>
       </Table.Row>
