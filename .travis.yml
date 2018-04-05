@@ -113,6 +113,8 @@ deploy:
     zip: "${TRAVIS_BUILD_DIR}/server/orders-get/context_call_v2_orders-get.zip"
     access_key_id: $AWSACCESSKEY
     secret_access_key: $SECRETACCESSKEY
+    environment_variables:
+      - SECRET=$AWS_LAMBDA_ENV_SECRET
     on:
       branch: database-lambda
 after_deploy:
