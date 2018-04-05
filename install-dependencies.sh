@@ -16,6 +16,9 @@ npm install
 cd ${TRAVIS_BUILD_DIR}/server/orders-get/
 npm install
 
+cd ${TRAVIS_BUILD_DIR}/server/orders-add/
+npm install
+
 # restore initial working directory
 # TODO necessary?
 cd ${TRAVIS_BUILD_DIR}/
