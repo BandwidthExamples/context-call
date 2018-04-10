@@ -28,9 +28,6 @@ script:
   # Run tests for the call version of our API
   - cd ${TRAVIS_BUILD_DIR}/server/call/
   - jest
-  # Run http callback tests
-  - cd ${TRAVIS_BUILD_DIR}/server/wait/
-  - jest
   # Run tests for getting orders from the database
   - cd ${TRAVIS_BUILD_DIR}/server/orders/
   - jest
@@ -52,9 +49,6 @@ before_deploy:
   - rm -r node_modules
   - npm install --production # for lambda zip to not be bloated with dev dependencies
   - zip context_call_v2_call -r node_modules/ index.js
-  # create wait zip
-  - cd ${TRAVIS_BUILD_DIR}/server/wait
-  - zip context_call_v2_wait index.js
   # create orders zip
   - cd ${TRAVIS_BUILD_DIR}/server/orders
   - zip context_call_v2_orders -r node_modules/ index.js
@@ -97,17 +91,6 @@ deploy:
     on:
       branch: modular_lambda
   - provider: lambda
-    function_name: "ContextCallV2Wait"
-    region: "us-west-2"
-    role: "arn:aws:iam::957512267502:role/LambdaDeployment"
-    runtime: "nodejs6.10"
-    handler_name: "handler"
-    zip: "${TRAVIS_BUILD_DIR}/server/wait/context_call_v2_wait.zip"
-    access_key_id: $AWSACCESSKEY
-    secret_access_key: $SECRETACCESSKEY
-    on:
-      branch: modular_lambda
-  - provider: lambda
     function_name: "ContextCallV2Orders"
     region: "us-west-2"
     role: "arn:aws:iam::957512267502:role/LambdaDeployment"
@@ -123,6 +106,5 @@ deploy:
 after_deploy:
   - rm ${TRAVIS_BUILD_DIR}/server/text/context_call_v2_text.zip
   - rm ${TRAVIS_BUILD_DIR}/server/call/context_call_v2_call.zip
-  - rm ${TRAVIS_BUILD_DIR}/server/wait/context_call_v2_wait.zip
   - rm ${TRAVIS_BUILD_DIR}/server/orders/context_call_v2_orders.zip
 

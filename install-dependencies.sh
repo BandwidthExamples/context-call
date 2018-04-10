@@ -10,9 +10,6 @@ npm install
 cd ${TRAVIS_BUILD_DIR}/server/call/
 npm install
 
-cd ${TRAVIS_BUILD_DIR}/server/wait/
-npm install
-
 cd ${TRAVIS_BUILD_DIR}/server/orders/
 npm install
 
