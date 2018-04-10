@@ -55,7 +55,9 @@ exports.handler = (event, context, callback) => {
 	context.callbackWaitsForEmptyEventLoop = false;
 
 	const params = event.queryStringParameters;
+	console.log(typeof(params));
 	if(!params) {
+		console.log("params is undefined");
 		callback(null, httpResponse.create(401, 'invalid/unspecified query parameters'));
 	}
 	console.log(params);
