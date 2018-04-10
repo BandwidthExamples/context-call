@@ -26,16 +26,14 @@ function bridgeCalls(idOne, idTwo, callback) {
 }
 
 exports.handler = (event, context, callback) => {
-	// Make callback() function like return; i.e., exit after its called
-	// TODO ensure that this is secure
 	const httpResponse = require('aws-api-gateway-return');
-	context.callbackWaitsForEmptyEventLoop = false;
 
 	let body = JSON.parse(event.body);
 	switch(body.deliveryState) {
 		case 'waiting':
 			// text message was sent but no delivery report yet
 			callback(null, httpResponse.create(200, "")); // acknowledge the callback
+			return;
 			break;
 		case 'delivered':
 			// continue running
@@ -45,6 +43,7 @@ exports.handler = (event, context, callback) => {
 	let tag = JSON.parse(body.tag); // our state, defined by the previous lambda call
 	if(!tag.secret || tag.secret != process.env.SECRET) {
 		callback(null, httpResponse.create(401, "secret was not specified or is invalid"));
+		return;
 	}
 
 	switch(tag.request) {

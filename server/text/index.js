@@ -22,19 +22,18 @@ function send_sms(customerNumber, message, companyNumber, waitType, waitValue, c
 }
 
 exports.handler = (event, context, callback) => {
-	// Make callback() function like return; i.e., exit after its called
-	// TODO ensure that this is securei
 	const httpResponse = require('aws-api-gateway-return');
-	context.callbackWaitsForEmptyEventLoop = false;
 	
 	const body = JSON.parse(event.body);
 	if(!body.secret || body.secret != process.env.SECRET) {
 		callback(null, httpResponse.create(401, "invalid/unspecified secret"));
+		return;
 	}
 
 	switch(body.request) {
 		case 'ping':
 			callback(null, httpResponse.create(200, "ready"));
+			return;
 			break;
 		case 'textCustomer':
 			send_sms(body.customerNumber, body.message, body.companyNumber, body.waitType, body.waitValue, callback);
