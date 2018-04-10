@@ -58,7 +58,7 @@ exports.handler = (event, context, callback) => {
 		callback(null, httpResponse.create(401, 'invalid/unspecified query parameters'));
 	}
 
-	const params = event.queryStringParamaets;
+	const params = event.queryStringParameters;
 	const secret = params.secret;
 	if(!secret || secret !== process.env.SECRET) {
 		callback(null, httpResponse.create(401, 'invalid/unspecified secret'));
