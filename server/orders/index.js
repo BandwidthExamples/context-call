@@ -22,6 +22,7 @@ function getOrders(callback) {
 				console.log('Not all data scanned.');
 			}
 			callback(null, httpResponse.create(200, data.Items));
+			return;
 		}
 	});
 }
@@ -47,6 +48,7 @@ function addOrder(orderId, name, phoneNumber, eta, callback) {
 		} else {
 			console.log('Added to the table.');
 			callback(null, httpResponse.create(200, 'Added: ' + JSON.stringify(data)));
+			return;
 		}
 	});
 }
@@ -59,11 +61,13 @@ exports.handler = (event, context, callback) => {
 	if(!params) {
 		console.log("params is undefined");
 		callback(null, httpResponse.create(401, 'invalid/unspecified query parameters'));
+		return;
 	}
 	console.log(params);
 	const secret = params.secret;
 	if(!secret || secret !== process.env.SECRET) {
 		callback(null, httpResponse.create(401, 'invalid/unspecified secret'));
+		return;
 	}
 
 	switch(event.httpMethod) {
