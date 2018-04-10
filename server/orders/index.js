@@ -54,27 +54,21 @@ function addOrder(orderId, name, phoneNumber, eta, callback) {
 }
 
 exports.handler = (event, context, callback) => {
-	context.callbackWaitsForEmptyEventLoop = false;
-
-	const params = event.queryStringParameters;
-	console.log(typeof(params));
-	if(!params) {
-		console.log("params is undefined");
-		callback(null, httpResponse.create(401, 'invalid/unspecified query parameters'));
-		return;
-	}
-	console.log(params);
-	const secret = params.secret;
-	if(!secret || secret !== process.env.SECRET) {
-		callback(null, httpResponse.create(401, 'invalid/unspecified secret'));
-		return;
-	}
-
 	switch(event.httpMethod) {
 		case 'GET':
 			getOrders(callback);
 			break;
 		case 'POST':
+			const params = event.queryStringParameters;
+			if(!params) {
+				callback(null, httpResponse.create(401, 'invalid/unspecified query parameters'));
+				return;
+			}
+			const secret = params.secret;
+			if(!secret || secret !== process.env.SECRET) {
+				callback(null, httpResponse.create(401, 'invalid/unspecified secret'));
+				return;
+			}
 			addOrder(
 				params.orderId,
 				params.name,
