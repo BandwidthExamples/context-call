@@ -3,6 +3,7 @@ import $ from 'jquery';
 import {BrowserRouter} from 'react-router-dom';
 import {
   BandwidthThemeProvider,
+  Button,
   Flow,
   Form,
   Input,
@@ -12,6 +13,7 @@ import {
 } from '@bandwidth/shared-components';
 import CallButton from './call-button/CallButton';
 import {OrderService} from '../services/OrderService';
+import AddCustomerRow from './add-customer-row/AddCustomerRow';
 
 class App extends React.Component {
 
@@ -89,6 +91,7 @@ class App extends React.Component {
     this.onCompanyNumberChange = this.onCompanyNumberChange.bind(this);
     this.onTextMessageChange = this.onTextMessageChange.bind(this);
     this.onSecretChange = this.onSecretChange.bind(this);
+    this.onAddCustomer = this.onAddCustomer.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
   }
 
@@ -116,6 +119,26 @@ class App extends React.Component {
       ...this.state,
       secret: secret,
       validSecret: secret.length > 0
+    });
+  }
+
+  onAddCustomer(customer) {
+    console.log('POST...');
+    $.ajax({
+      type: 'POST',
+      url: `https://dyrnp9j4tc.execute-api.us-west-2.amazonaws.com/beta/orders?\
+      name=${customer.name}&\
+      orderId=${customer.orderId}&\
+      eta=${customer.eta}&\
+      phoneNumber=${customer.phoneNumber}&\
+      secret=${this.state.secret}`,
+      crossDomain: true,
+      success: (res) => {
+        console.log('Success: ' + JSON.stringify(res));
+      },
+      error: (err) => {
+        console.log('Error: ' + JSON.stringify(err));
+      }
     });
   }
 
@@ -253,6 +276,10 @@ class App extends React.Component {
 
             <Table id="customer-table" headers={headers}>
               {tableBody}
+              <AddCustomerRow
+                onSubmit={this.onAddCustomer}
+                disabled={!App.isValidText(this.state.secret)}
+              />
             </Table>
           </div>
         </BandwidthThemeProvider>
