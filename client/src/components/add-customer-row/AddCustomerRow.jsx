@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   Button,
+  Icon,
   Input,
   Table
 } from '@bandwidth/shared-components';

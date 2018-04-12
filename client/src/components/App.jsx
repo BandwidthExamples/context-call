@@ -33,6 +33,18 @@ class App extends React.Component {
       message: '',
       secret: ''
     };
+
+    this.updateOrders = this.updateOrders.bind(this);
+    this.updateOrders();
+
+    this.onCompanyNumberChange = this.onCompanyNumberChange.bind(this);
+    this.onTextMessageChange = this.onTextMessageChange.bind(this);
+    this.onSecretChange = this.onSecretChange.bind(this);
+    this.onAddCustomer = this.onAddCustomer.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
+  }
+
+  updateOrders() {
     const defaultData = [
       {
         name: 'David Davidson I',
@@ -71,11 +83,16 @@ class App extends React.Component {
         phone: '+19195550105'
       }
     ];
-
     if (this.props.data) {
-      this.state.data = this.props.data;
+      this.setState({
+        ...this.state,
+        data: this.props.data
+      });
     } else {
-      this.state.data = defaultData;
+      this.setState({
+        ...this.state,
+        data: defaultData
+      });
       OrderService.getOrders()
         .then(data => {
           this.setState({
@@ -87,12 +104,6 @@ class App extends React.Component {
           console.error(err);
         });
     }
-
-    this.onCompanyNumberChange = this.onCompanyNumberChange.bind(this);
-    this.onTextMessageChange = this.onTextMessageChange.bind(this);
-    this.onSecretChange = this.onSecretChange.bind(this);
-    this.onAddCustomer = this.onAddCustomer.bind(this);
-    this.onSubmit = this.onSubmit.bind(this);
   }
 
   onCompanyNumberChange(event) {
@@ -136,9 +147,12 @@ class App extends React.Component {
       crossDomain: true,
       success: (res) => {
         console.log('Success: ' + JSON.stringify(res));
+        this.updateOrders();
+        alert('Added.');
       },
       error: (err) => {
         console.log('Error: ' + JSON.stringify(err));
+        alert('Error.');
       }
     });
   }
