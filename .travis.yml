@@ -51,6 +51,8 @@ before_deploy:
   - zip context_call_v2_call -r node_modules/ index.js
   # create orders zip
   - cd ${TRAVIS_BUILD_DIR}/server/orders
+  - rm -r node_modules
+  - npm install --production
   - zip context_call_v2_orders -r node_modules/ index.js
 #Deploy to lambda via dpl
 deploy:
