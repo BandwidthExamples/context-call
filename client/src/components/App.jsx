@@ -124,14 +124,15 @@ class App extends React.Component {
 
   onAddCustomer(customer) {
     console.log('POST...');
+    let url = 'https://dyrnp9j4tc.execute-api.us-west-2.amazonaws.com/beta/orders?';
+    url += `name=${customer.name}&`;
+    url += `orderId=${customer.orderId}&`;
+    url += `eta=${customer.eta}&`;
+    url += `phoneNumber=${customer.phoneNumber}&`;
+    url += `secret=${this.state.secret}`;
     $.ajax({
       type: 'POST',
-      url: `https://dyrnp9j4tc.execute-api.us-west-2.amazonaws.com/beta/orders?\
-      name=${customer.name}&\
-      orderId=${customer.orderId}&\
-      eta=${customer.eta}&\
-      phoneNumber=${customer.phoneNumber}&\
-      secret=${this.state.secret}`,
+      url: url,
       crossDomain: true,
       success: (res) => {
         console.log('Success: ' + JSON.stringify(res));
