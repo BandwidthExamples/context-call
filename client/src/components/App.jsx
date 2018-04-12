@@ -31,7 +31,8 @@ class App extends React.Component {
       companyNumber: '',
       customerNumber: '',
       message: '',
-      secret: ''
+      secret: '',
+      data: []
     };
 
     this.updateOrders = this.updateOrders.bind(this);
