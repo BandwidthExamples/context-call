@@ -1,4 +1,4 @@
-const handler = require('./index').handler;
+let handler;
 
 beforeEach(() => {
   process.env.SECRET = 'test-secret';
@@ -24,6 +24,8 @@ beforeEach(() => {
       }
     };
   });
+
+  handler = require('./index').handler;
 });
 
 afterEach(() => {
