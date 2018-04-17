@@ -5,7 +5,6 @@ const httpResponse = require('aws-api-gateway-return');
 AWS.config.update({region: 'us-west-2'});
 
 function getOrders(callback) {
-	// let db = new AWS.DynamoDB({region: 'us-west-2', apiVersion: '2012-08-10'});
 	let docClient = new AWS.DynamoDB.DocumentClient();
 
 	let params = {
@@ -28,7 +27,6 @@ function getOrders(callback) {
 }
 
 function addOrder(orderId, name, phoneNumber, eta, callback) {
-	// let db = new AWS.DynamoDB({region: 'us-west-2', apiVersion: '2012-08-10'});
 	let docClient = new AWS.DynamoDB.DocumentClient();
 
 	let params = {
@@ -54,7 +52,6 @@ function addOrder(orderId, name, phoneNumber, eta, callback) {
 }
 
 function deleteOrder(orderId, callback) {
-	// let db = new AWS.DynamoDB({region: 'us-west-2', apiVersion: '2012-08-10'});
 	let docClient = new AWS.DynamoDB.DocumentClient();
 
 	let params = {
