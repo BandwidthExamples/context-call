@@ -119,6 +119,7 @@ class AddCustomerRow extends React.Component {
         </Table.Cell>
         <Table.Cell>
           <Button
+            id="add-customer-btn"
             onClick={this.onSubmit}
             disabled={
               this.props.disabled ||
