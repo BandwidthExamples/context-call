@@ -19,21 +19,21 @@ install: ${TRAVIS_BUILD_DIR}/install-dependencies.sh
 script:
   #Run jest unit tests on client
   - cd ${TRAVIS_BUILD_DIR}/client
-  - jest
+  - npm run test
   #Run cypress tests on client
 #  - npm run cypress:run
   # Run tests for the text version of our API
   - cd ${TRAVIS_BUILD_DIR}/server/text/
-  - jest
+  - npm run test
   # Run tests for the call version of our API
   - cd ${TRAVIS_BUILD_DIR}/server/call/
-  - jest
+  - npm run test
   # Run tests for getting orders from the database
   - cd ${TRAVIS_BUILD_DIR}/server/orders/
-  - jest
+  - npm run test
   # Run tests for getting orders from the database
   - cd ${TRAVIS_BUILD_DIR}/server/orders/
-  - jest
+  - npm run test
 before_deploy:
   - cd ${TRAVIS_BUILD_DIR}/server/local_dependencies/aws-api-gateway-return
   - npm install --production
