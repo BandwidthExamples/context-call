@@ -32,9 +32,13 @@ script:
   - cd ${TRAVIS_BUILD_DIR}/server/orders/
   - npm run test
 before_deploy:
+  # Install aws-api-gateway-return dependencies for later use
   - cd ${TRAVIS_BUILD_DIR}/server/local_dependencies/aws-api-gateway-return
+  - rm -r node_modules
   - npm install --production
+  # Install simple-bandwidth-api dependencies for later use
   - cd ${TRAVIS_BUILD_DIR}/server/local_dependencies/simple-bandwidth-api
+  - rm -r node_modules
   - npm install --production
   # create text zip
   - cd ${TRAVIS_BUILD_DIR}/server/text
