@@ -53,22 +53,48 @@ function addOrder(orderId, name, phoneNumber, eta, callback) {
 	});
 }
 
+function deleteOrder(orderId, callback) {
+	// let db = new AWS.DynamoDB({region: 'us-west-2', apiVersion: '2012-08-10'});
+	let docClient = new AWS.DynamoDB.DocumentClient();
+
+	let params = {
+		TableName: 'orders',
+		Key: {
+			'orderId': orderId,
+		}
+	};
+
+	docClient.delete(params, (err, data) => {
+		if(err) {
+			console.error('Unable to delete from the table. Error: ',
+				JSON.stringify(err, null, 2));
+		} else {
+			console.log('Deleted from the table.');
+			callback(null, httpResponse.create(200, 'Deleted: ' + JSON.stringify(data)));
+			return;
+		}
+	});
+}
+
 exports.handler = (event, context, callback) => {
+	if(event.httpMethod == 'GET') {
+		getOrders(callback);
+		return;
+	}
+	
+	const params = event.queryStringParameters;
+	if(!params) {
+		callback(null, httpResponse.create(401, 'invalid/unspecified query parameters'));
+		return;
+	}
+	const secret = params.secret;
+	if(!secret || secret !== process.env.SECRET) {
+		callback(null, httpResponse.create(401, 'invalid/unspecified secret'));
+		return;
+	}
+	
 	switch(event.httpMethod) {
-		case 'GET':
-			getOrders(callback);
-			break;
 		case 'POST':
-			const params = event.queryStringParameters;
-			if(!params) {
-				callback(null, httpResponse.create(401, 'invalid/unspecified query parameters'));
-				return;
-			}
-			const secret = params.secret;
-			if(!secret || secret !== process.env.SECRET) {
-				callback(null, httpResponse.create(401, 'invalid/unspecified secret'));
-				return;
-			}
 			addOrder(
 				params.orderId,
 				params.name,
@@ -77,5 +103,9 @@ exports.handler = (event, context, callback) => {
 				callback
 			);
 			break;
+		case 'DELETE':
+			deleteOrder(params.orderId, callback);
+			break;
 	}
 };
+
