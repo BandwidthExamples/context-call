@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@bandwidth/shared-components": "^3.0.9",
+    "@bandwidth/shared-components": "3.2.7",
     "babel-jest": "^22.4.1",
     "jquery": "^3.3.1",
     "react": "^16.2.0",
