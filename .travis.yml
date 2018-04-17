@@ -31,9 +31,6 @@ script:
   # Run tests for getting orders from the database
   - cd ${TRAVIS_BUILD_DIR}/server/orders/
   - npm run test
-  # Run tests for getting orders from the database
-  - cd ${TRAVIS_BUILD_DIR}/server/orders/
-  - npm run test
 before_deploy:
   - cd ${TRAVIS_BUILD_DIR}/server/local_dependencies/aws-api-gateway-return
   - npm install --production
