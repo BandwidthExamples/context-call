@@ -55,9 +55,9 @@ exports.handler = (event, context, callback) => {
 				new_tag.request = 'call';
 				number = tag.companyNumber;
 				new_tag.customerNumber = tag.customerNumber;
-			} else if (tag.companyNumber) {
+			} else if (tag.customerNumber) {
 				new_tag.request = 'bridgeCalls';
-				number = tag.companyNumber;
+				number = tag.customerNumber;
 				new_tag.customerCallId = body.callId;
 			}
 			callNumber(number, new_tag, callback);
