@@ -3,13 +3,12 @@ import $ from 'jquery';
 import {BrowserRouter} from 'react-router-dom';
 import {
   BandwidthThemeProvider,
-  Button,
   Flow,
   Form,
+  Icon,
   Input,
   Label,
-  Table,
-  Icon
+  Table
 } from '@bandwidth/shared-components';
 import CallButton from './call-button/CallButton';
 import {OrderService} from '../services/OrderService';
@@ -17,36 +16,8 @@ import AddCustomerRow from './add-customer-row/AddCustomerRow';
 
 class App extends React.Component {
 
-  static isValidPhoneNumber(number) {
-    return number.match(new RegExp('^[+][0-9]{11}$'));
-  }
-
-  static isValidText(text) {
-    return text.length > 0;
-  }
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      companyNumber: '',
-      customerNumber: '',
-      message: '',
-      secret: '',
-      data: []
-    };
-
-    this.updateOrders = this.updateOrders.bind(this);
-    this.updateOrders();
-
-    this.onCompanyNumberChange = this.onCompanyNumberChange.bind(this);
-    this.onTextMessageChange = this.onTextMessageChange.bind(this);
-    this.onSecretChange = this.onSecretChange.bind(this);
-    this.onAddCustomer = this.onAddCustomer.bind(this);
-    this.onSubmit = this.onSubmit.bind(this);
-  }
-
-  updateOrders() {
-    const defaultData = [
+  static get DEFAULT_DATA() {
+    return [
       {
         name: 'David Davidson I',
         order: 'ABCDEF–123',
@@ -84,27 +55,53 @@ class App extends React.Component {
         phone: '+19195550105'
       }
     ];
-    if (this.props.data) {
-      this.setState({
-        ...this.state,
-        data: this.props.data
-      });
+  }
+
+  static isValidPhoneNumber(number) {
+    return number.match(new RegExp('^[+][0-9]{11}$'));
+  }
+
+  static isValidText(text) {
+    return text.length > 0;
+  }
+
+  constructor(props) {
+    super(props);
+    this.loaded = false;
+    this.state = {
+      companyNumber: '',
+      customerNumber: '',
+      message: '',
+      secret: '',
+      data: []
+    };
+
+    if (props.data) {
+      this.state.data = props.data;
     } else {
-      this.setState({
-        ...this.state,
-        data: defaultData
-      });
-      OrderService.getOrders()
-        .then(data => {
-          this.setState({
-            ...this.state,
-            data: data
-          });
-        })
-        .catch(err => {
-          console.error(err);
-        });
+      this.state.data = App.DEFAULT_DATA;
     }
+
+    this.updateOrders = this.updateOrders.bind(this);
+    this.onCompanyNumberChange = this.onCompanyNumberChange.bind(this);
+    this.onTextMessageChange = this.onTextMessageChange.bind(this);
+    this.onSecretChange = this.onSecretChange.bind(this);
+    this.onAddCustomer = this.onAddCustomer.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
+  }
+
+  updateOrders() {
+    console.log('Loading from database...');
+    OrderService.getOrders()
+      .then(data => {
+        this.setState({
+          ...this.state,
+          data: data
+        });
+      })
+      .catch(err => {
+        console.error(err);
+      });
   }
 
   onCompanyNumberChange(event) {
@@ -193,6 +190,11 @@ class App extends React.Component {
   }
 
   render() {
+    if (!this.loaded) {
+      this.loaded = true;
+      this.updateOrders();
+    }
+
     const headers = (
       <Table.Row>
         <Table.Header>Name</Table.Header>
