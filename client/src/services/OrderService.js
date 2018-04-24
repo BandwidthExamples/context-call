@@ -2,10 +2,6 @@ import $ from 'jquery';
 
 export class OrderService {
 
-  static addOrder(name, orderId, eta, phoneNumber) {
-
-  }
-
   static getOrders() {
     console.log('Requesting customers.');
     return new Promise((resolve, reject) => {
