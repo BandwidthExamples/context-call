@@ -91,7 +91,6 @@ class App extends React.Component {
   }
 
   updateOrders() {
-    console.log('Loading from database...');
     OrderService.getOrders()
       .then(data => {
         this.setState({

@@ -1,22 +1,13 @@
 import React from 'react';
 import {shallow} from 'enzyme';
-import {Button} from '@bandwidth/shared-components';
-import CallButton from './CallButton';
-
-jest.useFakeTimers();
+import AddCustomerRow from './AddCustomerRow';
 
 let wrapper;
 let instance;
-let onSubmitMock = jest.fn();
+let mockSubmit = jest.fn();
 
 beforeEach(() => {
-  wrapper = shallow(
-    <CallButton
-      onSubmit={onSubmitMock}
-      customerNumber={'+19875550120'}
-      disabled={false}
-    />
-  );
+  wrapper = shallow(<AddCustomerRow onSubmit={mockSubmit}/>);
   instance = wrapper.instance();
 });
 
@@ -24,37 +15,93 @@ test('test runs', () => {
   expect(true);
 });
 
-describe('CallButton', () => {
-  it('renders a button', () => {
-    expect(wrapper.find(Button).length).toEqual(1);
+describe('App', () => {
+  it('renders a name field', () => {
+    expect(wrapper.find('#new-customer-name').length).toEqual(1);
   });
 
-  it('is disabled when the property is true', () => {
-    wrapper = shallow(<CallButton disabled={true}/>);
-    instance = wrapper.instance();
-    expect(wrapper.find(Button).props().disabled).toEqual(true);
+  it('renders an order ID', () => {
+    expect(wrapper.find('#new-customer-order-id').length).toEqual(1);
   });
 
-  it('is disabled when the property is false', () => {
-    wrapper = shallow(<CallButton disabled={false}/>);
-    instance = wrapper.instance();
-    expect(wrapper.find(Button).props().disabled).toEqual(false);
+  it('renders an ETA field', () => {
+    expect(wrapper.find('#new-customer-eta').length).toEqual(1);
   });
 
-  it('calls the submit function on submit', () => {
-    expect(onSubmitMock.mock.calls.length).toEqual(0);
-    expect(setTimeout).toHaveBeenCalledTimes(0);
-    expect(instance.state.sending).toEqual(false);
+  it('renders a phone number field', () => {
+    expect(wrapper.find('#new-customer-phone').length).toEqual(1);
+  });
+
+  it('renders an add customer button', () => {
+    expect(wrapper.find('#add-customer-btn').length).toEqual(1);
+  });
+});
+
+describe('App', () => {
+  it('updates the name on change event', () => {
+    instance.onNameChange({
+      target: {
+        value: 'Test Name'
+      }
+    });
+
+    expect(wrapper.state().customer.name).toEqual('Test Name');
+  });
+
+  it('updates the order ID on change event', () => {
+    instance.onOrderIDChange({
+      target: {
+        value: 'Test Order ID'
+      }
+    });
+
+    expect(wrapper.state().customer.orderId).toEqual('Test Order ID');
+  });
+
+  it('updates the ETA on change event', () => {
+    instance.onETAChange({
+      target: {
+        value: 'Test ETA'
+      }
+    });
+
+    expect(wrapper.state().customer.eta).toEqual('Test ETA');
+  });
+
+  it('updates the phone number on change event', () => {
+    instance.onPhoneNumberChange({
+      target: {
+        value: 'Test Number'
+      }
+    });
+
+    expect(wrapper.state().customer.phoneNumber).toEqual('Test Number');
+  });
+});
+
+describe('App', () => {
+  it('submits and sends the field data', () => {
+    wrapper.setState({
+      customer: {
+        name: 'Test Name',
+        orderId: 'Test ID',
+        eta: 'Test ETA',
+        phoneNumber: 'Test Number'
+      }
+    });
+
+    expect(mockSubmit.mock.calls.length).toEqual(0);
     instance.onSubmit({
       preventDefault: () => {
       }
     });
-    expect(onSubmitMock.mock.calls.length).toEqual(1);
-    expect(onSubmitMock.mock.calls[0][0]).toEqual('+19875550120');
-    expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), 1000);
-
-    expect(instance.state.sending).toEqual(true);
-    jest.runAllTimers();
-    expect(instance.state.sending).toEqual(false);
+    expect(mockSubmit.mock.calls.length).toEqual(1);
+    const expected = {
+      name: 'Test Name',
+      orderId: 'Test ID',
+      eta: 'Test ETA',
+      phoneNumber: 'Test Number'
+    };
+    expect(mockSubmit.mock.calls[0][0]).toEqual(expected);
   });
 });
