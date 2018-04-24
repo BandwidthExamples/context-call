@@ -8,6 +8,7 @@ import {OrderService} from '../services/OrderService';
 jest.mock('jquery', () => ({
   ajax: jest.fn()
 }));
+global.alert = jest.fn();
 
 let wrapper;
 let instance;
