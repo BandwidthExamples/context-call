@@ -2,10 +2,6 @@ import $ from 'jquery';
 
 export class OrderService {
 
-  static addOrder(name, orderId, eta, phoneNumber) {
-
-  }
-
   static getOrders() {
     console.log('Requesting customers.');
     return new Promise((resolve, reject) => {
@@ -20,8 +16,11 @@ export class OrderService {
               name: order['name'],
               order: order['orderId'],
               eta: order['eta'],
-              phone: '+1' + order['phoneNumber']
+              phone: order['phoneNumber']
             };
+            if ((orders[i].phone + '').match(new RegExp('^[0-9]{10}$'))) {
+              orders[i].phone = '+1' + orders[i].phone;
+            }
           }
           resolve(orders);
         },
