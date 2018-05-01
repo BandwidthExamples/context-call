@@ -113,6 +113,35 @@ test('calls the given number', () => {
   });
 });
 
+test('calls the customer number', () => {
+  const tag = JSON.stringify({
+    secret: 'test-secret',
+    request: 'call',
+    customerNumber: '+12345550101'
+  });
+  const eventBody = JSON.stringify({
+    deliveryState: 'delivered',
+    tag: tag,
+    callId: 'test-call-id'
+  });
+  const event = {
+    body: eventBody
+  };
+  handler(event, {}, (err, res) => {
+    expect(err).toBeNull();
+    expect(res).not.toBeNull();
+    expect(res.type).toBe('calls');
+
+    expect(res.data).not.toBeNull();
+    const data = JSON.parse(res.data);
+    expect(data.to).toBe('+12345550101');
+
+    expect(data.tag).not.toBeNull();
+    const tag = JSON.parse(data.tag);
+    expect(tag.request).toBe('bridgeCalls');
+  });
+});
+
 test('bridges the given numbers', () => {
   const tag = JSON.stringify({
     secret: 'test-secret',
