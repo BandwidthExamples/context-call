@@ -12,6 +12,11 @@ const mockPut = jest.fn((params, callback) => {
   callback(null, {});
 });
 
+const mockDelete = jest.fn((params, callback) => {
+  console.log('Deleting...');
+  callback(null, {});
+});
+
 beforeEach(() => {
   process.env.SECRET = 'test-secret';
 
@@ -26,6 +31,7 @@ beforeEach(() => {
           constructor() {
             this.scan = mockScan;
             this.put = mockPut;
+            this.delete = mockDelete;
           }
         }
       }
@@ -122,6 +128,30 @@ test('adds the order', () => {
         name: 'test-name',
         phoneNumber: 'test-phone-number',
         eta: 'test-eta'
+      }
+    });
+  });
+});
+
+test('deletes the order', () => {
+  const event = {
+    httpMethod: 'DELETE',
+    queryStringParameters: {
+      orderId: 'test-order-id',
+      secret: 'test-secret'
+    }
+  };
+  handler(event, {}, (err, res) => {
+    expect(err).toBeNull();
+    expect(res).not.toBeNull();
+    expect(res.code).toBe(200);
+    expect(res.message).not.toBeNull();
+
+    expect(mockDelete.mock.calls.length).toBe(1);
+    expect(mockDelete.mock.calls[0][0]).toEqual({
+      TableName: 'orders',
+      Key: {
+        orderId: 'test-order-id',
       }
     });
   });
