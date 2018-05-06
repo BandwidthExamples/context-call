@@ -1,0 +1,15 @@
+{
+  "name": "aws-lambda-tag-parser",
+  "version": "0.0.1",
+  "description": "Parses and validates the 'tag' value from a JSON request body",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [
+    "aws",
+    "lambda"
+  ],
+  "author": "Nick Ashley",
+  "license": "ISC"
+}

@@ -23,28 +23,16 @@ function send_sms(tag, callback) {
 
 exports.handler = (event, context, callback) => {
 	const httpResponse = require('aws-api-gateway-return');
+	const tagParser = require('aws-lambda-tag-parser');
 
 	const body = JSON.parse(event.body);
 
-	if (!('tag' in body)) {
-		callback(null, httpResponse.create(400, "unspecified tag"));
+	let tag = tagParser.parse(body);
+	if (!tag) {
 		return;
 	}
 
-	const tag = JSON.parse(body.tag);
-	for(let parameter in ['waitType', 'waitValue', 'companyNumber', 'customerNumber', 'secret', 'request']){
-		if (!(parameter in tag)) {
-			callback(null, httpResponse.create(400, "unspecified tag"));
-			return;
-		}
-	}
-
-	if(tag.secret != process.env.SECRET) {
-		callback(null, httpResponse.create(401, "invalid secret"));
-		return;
-	}
-
-	switch(body.tag.request) {
+	switch(tag.request) {
 		case 'message_customer':
 			send_sms(tag, callback);
 			break;
