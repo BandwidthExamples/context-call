@@ -73,6 +73,7 @@ deploy:
       - PHONE_NUMBER=$AWS_LAMBDA_ENV_PHONE_NUMBER
       - USER_ID=$AWS_LAMBDA_ENV_USER_ID
       - CALLBACK_WAIT_URL=$AWS_LAMBDA_ENV_CALLBACK_WAIT_URL
+      - STEP_FUNCTION_ARN=$AWS_LAMBDA_ENV_STEP_FUNCTION_ARN
     on:
       branch: modular_lambda
   - provider: lambda
