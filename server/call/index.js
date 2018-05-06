@@ -9,7 +9,7 @@ function callNumber(tag, callback) {
 	const postData = JSON.stringify({
 		from: process.env.PHONE_NUMBER,
 		to: tag.companyNumber,
-		callbackUrl: process.env.CALLBACK_WAIT_URL, // the URL of our API endpoint that will handle waiting and then calling
+		callbackUrl: process.env.CALLBACK_CALL_URL, // the URL of our API endpoint that will handle waiting and then calling
 		tag: JSON.stringify(tag)
 	});
 

@@ -14,7 +14,7 @@ function send_sms(tag, callback) {
 		to: tag.customerNumber,
 		text: tag.message,
 		receiptRequested: 'all', // request SMS delivery reciept
-		callbackUrl: process.env.CALLBACK_WAIT_URL, // the URL of our API endpoint that will handle waiting and then calling
+		callbackUrl: process.env.CALLBACK_TEXT_URL, // the URL of our API endpoint that will handle waiting and then calling
 		tag: JSON.stringify(tag) // send the wait types and wait values between texting and calling as well as both numbers to call
 	});
 
