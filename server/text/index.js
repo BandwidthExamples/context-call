@@ -53,6 +53,7 @@ exports.handler = (event, context, callback) => {
 				const AWS = require('aws-sdk');
 				const crypto = require('crypto');
 				let stepfunctions = new AWS.StepFunctions();
+				console.log("Generating MD5...");
 				let params = {
 					stateMachineArn: process.env.STEP_FUNCTION_ARN,
 					input: JSON.stringify({'body':tag}),
