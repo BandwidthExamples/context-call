@@ -14,7 +14,7 @@ exports.parse = function(body, callback) {
 		}
 	*/
 	if (!('tag' in body)) {
-		callback(null, httpResponse.create(400, "unspecified tag"));
+		callback(null, httpResponse.create(400, "unspecified tag; body is " + JSON.stringify(body)));
 		return false;
 	}
 
