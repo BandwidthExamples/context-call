@@ -41,7 +41,7 @@ before_deploy:
   - rm -rf node_modules
   - npm install --production
   # Install aws-lambda-tag-parser dependencies for later use
-  - cd ${TRAVIS_BUILD_DIR}/server/local_dependencies/aws-lamba-tag-parser
+  - cd ${TRAVIS_BUILD_DIR}/server/local_dependencies/aws-lambda-tag-parser
   - rm -rf node_modules
   - npm install --production
   # create text zip
