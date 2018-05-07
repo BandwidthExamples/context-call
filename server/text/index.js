@@ -55,9 +55,10 @@ exports.handler = (event, context, callback) => {
 					name: crypto.createHash('md5').update(JSON.stringify(tag)).digest("hex") // we now have idempotent executions // TODO ensure this occurs before the text is sent or decide to get rid of this line
 				};
 				stepfunctions.startExecution(params, function(err, data) {
-					if (err)	console.log(err, err.stack); // an error occurred
+					if (err)	callback(null, httpResponse.create(500, "Internal Server Error (" + err + "):\n" + err.stack)); // an error occurred
 					else		callback(null, httpResponse.create(200, "okay")); // successful response
 				});
+				callback(null, httpResponse.create(200, "okay"));
 			}
 			break;
 		default:
