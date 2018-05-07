@@ -4,7 +4,8 @@
   "private": true,
   "dependencies": {
     "aws-api-gateway-return": "file:../local_dependencies/aws-api-gateway-return",
-    "simple-bandwidth-api": "file:../local_dependencies/simple-bandwidth-api"
+    "simple-bandwidth-api": "file:../local_dependencies/simple-bandwidth-api",
+    "aws-lambda-tag-parser": "file:../local_dependencies/aws-lambda-tag-parser"
   },
   "scripts": {
     "test": "jest"
