@@ -20,7 +20,7 @@ exports.parse = function(body, callback) {
 
 	const body_tag = JSON.parse(body.tag);
 	let tag = {};
-	for(let parameter of ['waitType', 'waitValue', 'companyNumber', 'customerNumber', 'secret', 'request']){
+	for(let parameter of ['waitType', 'waitValue', 'companyNumber', 'customerNumber', 'secret', 'request', 'message']){
 		if (!(parameter in body_tag)) {
 			callback(null, httpResponse.create(400, "invalid tag (missing `" + parameter + "`)"));
 			return false;
