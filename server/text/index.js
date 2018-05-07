@@ -47,25 +47,26 @@ exports.handler = (event, context, callback) => {
 				// not delivered yet, so keep waiting
 				callback(null, httpResponse.create(200, "okay"));
 				return;
-			} else {
-				tag.request = 'call_company';
-
-				const AWS = require('aws-sdk');
-				const crypto = require('crypto');
-				let stepfunctions = new AWS.StepFunctions();
-				console.log("Generating MD5...");
-				let params = {
-					stateMachineArn: process.env.STEP_FUNCTION_ARN,
-					input: JSON.stringify({'body':tag}),
-					name: crypto.createHash('md5').update(JSON.stringify(tag)).digest("hex") // we now have idempotent executions // TODO ensure this occurs before the text is sent or decide to get rid of this line
-				};
-				console.log("Starting step function...");
-				stepfunctions.startExecution(params, function(err, data) {
-					if (err)	callback(null, httpResponse.create(500, "Internal Server Error (" + err + "):\n" + err.stack)); // an error occurred
-					else		callback(null, httpResponse.create(200, "okay")); // successful response
-				});
-				return;
 			}
+			console.log("Requiring AWS SDK...");
+			tag.request = 'call_company';
+
+			const AWS = require('aws-sdk');
+			console.log("Requiring crypto...");
+			const crypto = require('crypto');
+			console.log("Creating Step Function...");
+			let stepfunctions = new AWS.StepFunctions();
+			console.log("Generating MD5...");
+			let params = {
+				stateMachineArn: process.env.STEP_FUNCTION_ARN,
+				input: JSON.stringify({'body':tag}),
+				name: crypto.createHash('md5').update(JSON.stringify(tag)).digest("hex") // we now have idempotent executions // TODO ensure this occurs before the text is sent or decide to get rid of this line
+			};
+			console.log("Starting step function...");
+			stepfunctions.startExecution(params, function(err, data) {
+				if (err)	callback(null, httpResponse.create(500, "Internal Server Error (" + err + "):\n" + err.stack)); // an error occurred
+				else		callback(null, httpResponse.create(200, "okay")); // successful response
+			});
 			break;
 		default:
 			callback(null, httpResponse.create(400, "invalid request"));
