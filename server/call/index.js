@@ -38,6 +38,7 @@ exports.handler = (event, context, callback) => {
 
 	switch(tag.request) {
 		case 'call_company':
+			tag.request = 'ensure_company_answer';
 			callNumber(tag.companyNumber, tag, callback);
 			break;
 
@@ -46,6 +47,7 @@ exports.handler = (event, context, callback) => {
 				callback(null, httpResponse.create(400, "no answer event"));
 			}
 			tag.companyCallId = body.callId;
+			tag.request = 'ensure_customer_answer';
 			callNumber(tag.customerNumber, tag, callback);
 			break;
 

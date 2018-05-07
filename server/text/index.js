@@ -34,6 +34,7 @@ exports.handler = (event, context, callback) => {
 
 	switch(tag.request) {
 		case 'message_customer':
+			tag.request = 'ensure_message_delivery';
 			send_sms(tag, callback);
 			break;
 		case 'ensure_message_delivery':
