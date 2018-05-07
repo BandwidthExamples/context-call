@@ -31,7 +31,7 @@ exports.handler = (event, context, callback) => {
 
 	const body = JSON.parse(event.body);
 
-	let tag = tagParser.parse(body);
+	let tag = tagParser.parse(body, callback);
 	if (!tag) {
 		return;
 	}
