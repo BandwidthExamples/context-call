@@ -41,10 +41,12 @@ exports.handler = (event, context, callback) => {
 			if(!('deliveryState' in body)) {
 				// this shouldn't happen unless something weird is going on
 				callback(null, httpResponse.create(400, "no delivery state"));
+				return;
 			}
 			if (body.deliveryState != 'delivered') {
 				// not delivered yet, so keep waiting
 				callback(null, httpResponse.create(200, "okay"));
+				return;
 			} else {
 				tag.request = 'call_company';
 
@@ -60,7 +62,7 @@ exports.handler = (event, context, callback) => {
 					if (err)	callback(null, httpResponse.create(500, "Internal Server Error (" + err + "):\n" + err.stack)); // an error occurred
 					else		callback(null, httpResponse.create(200, "okay")); // successful response
 				});
-				callback(null, httpResponse.create(200, "okay"));
+				return;
 			}
 			break;
 		default:
