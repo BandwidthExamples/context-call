@@ -46,6 +46,8 @@ exports.handler = (event, context, callback) => {
 				// not delivered yet, so keep waiting
 				callback(null, httpResponse.create(200, "okay"));
 			} else {
+				tag.request = 'call_company';
+
 				const AWS = require('aws-sdk');
 				const crypto = require('crypto');
 				let stepfunctions = new AWS.StepFunctions();
