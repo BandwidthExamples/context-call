@@ -3,10 +3,12 @@ import App from './App';
 import {shallow} from 'enzyme';
 import $ from 'jquery';
 import CallButton from './call-button/CallButton';
+import {OrderService} from '../services/OrderService';
 
 jest.mock('jquery', () => ({
   ajax: jest.fn()
 }));
+global.alert = jest.fn();
 
 let wrapper;
 let instance;
@@ -38,6 +40,12 @@ beforeEach(() => {
       phone: '+19195550100'
     }
   ];
+  $.ajax.mockClear();
+  OrderService.getOrders = () => {
+    return new Promise((resolve, reject) => {
+      resolve(data);
+    });
+  };
   wrapper = shallow(<App data={data}/>);
   instance = wrapper.instance();
 });
@@ -196,13 +204,45 @@ describe('App', () => {
     expect($.ajax.mock.calls.length).toEqual(0);
     instance.onSubmit('+19195550100');
     expect($.ajax.mock.calls.length).toEqual(1);
-    const expected = {
+    const expected = {"tag":JSON.stringify({
       companyNumber: '+19875550120',
       customerNumber: '+19195550100',
       message: 'Test Message',
       secret: 'Test Secret'
-    };
+    })};
     expect($.ajax.mock.calls[0][0].data).toEqual(JSON.stringify(expected));
+
+    try {
+      $.ajax.mock.calls[0][0].success('Success');
+      $.ajax.mock.calls[0][0].error('Error');
+    } catch (error) {
+      fail();
+    }
+  });
+});
+
+describe('App', () => {
+  it('submits and sends the new customer data', () => {
+    console.log('Call: ' + JSON.stringify($.ajax.mock.calls[0]));
+    expect($.ajax.mock.calls.length).toEqual(0);
+    wrapper.setState({
+      secret: 'test-secret'
+    });
+    instance.onAddCustomer({
+      name: 'test-name',
+      orderId: 'test-order-id',
+      eta: 'test-eta',
+      phoneNumber: 'test-phone-number'
+    });
+    expect($.ajax.mock.calls.length).toEqual(1);
+    const expected = 'https://dyrnp9j4tc.execute-api.us-west-2.amazonaws.com/beta/' +
+      'orders?' +
+      'name=test-name&' +
+      'orderId=test-order-id&' +
+      'eta=test-eta&' +
+      'phoneNumber=test-phone-number&' +
+      'secret=test-secret';
+    expect($.ajax.mock.calls[0][0].url).toEqual(expected);
 
     try {
       $.ajax.mock.calls[0][0].success('Success');
