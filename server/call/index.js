@@ -45,6 +45,7 @@ exports.handler = (event, context, callback) => {
 		case 'ensure_company_answer':
 			if (!('eventType' in body && body.eventType == 'answer')){
 				callback(null, httpResponse.create(400, "no answer event"));
+				return;
 			}
 			tag.companyCallId = body.callId;
 			tag.request = 'ensure_customer_answer';
@@ -54,6 +55,7 @@ exports.handler = (event, context, callback) => {
 		case 'ensure_customer_answer':
 			if (!('eventType' in body && body.eventType == 'answer')){
 				callback(null, httpResponse.create(400, "no answer event"));
+				return;
 			}
 			tag.customerCallId = body.callId;
 			bridgeCalls(tag.customerCallId, tag.companyCallId, callback);
