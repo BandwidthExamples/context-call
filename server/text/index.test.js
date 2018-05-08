@@ -141,7 +141,7 @@ test('ensures message delivery', () => {
   handler(event, {}, (err, res) => {
     expect(err).toBeNull();
     expect(res).not.toBeNull();
-    
+
     const tag = JSON.parse(mockStartExecution.mock.params[0][0]);
     const err_function = JSON.parse(mockStartExecution.mock.params[0][1]);
 

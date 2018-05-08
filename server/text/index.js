@@ -48,7 +48,6 @@ exports.handler = (event, context, callback) => {
 				callback(null, httpResponse.create(200, "okay"));
 				return;
 			}
-			console.log("Requiring AWS SDK...");
 			tag.request = 'call_company';
 
 			const AWS = require('aws-sdk');
@@ -60,7 +59,6 @@ exports.handler = (event, context, callback) => {
 				input: JSON.stringify(input),
 				// name: crypto.createHash('md5').update(JSON.stringify(tag)).digest("hex") // we now have idempotent executions // TODO ensure this occurs before the text is sent or decide to get rid of this line
 			};
-			console.log("Starting step function...");
 			stepfunctions.startExecution(params, function(err, data) {
 				if (err)	callback(null, httpResponse.create(500, "Internal Server Error (" + err + "):\n" + err.stack)); // an error occurred
 				else		callback(null, httpResponse.create(200, "okay")); // successful response
