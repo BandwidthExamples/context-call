@@ -204,12 +204,12 @@ describe('App', () => {
     expect($.ajax.mock.calls.length).toEqual(0);
     instance.onSubmit('+19195550100');
     expect($.ajax.mock.calls.length).toEqual(1);
-    const expected = {
+    const expected = {"tag":JSON.stringify({
       companyNumber: '+19875550120',
       customerNumber: '+19195550100',
       message: 'Test Message',
       secret: 'Test Secret'
-    };
+    })};
     expect($.ajax.mock.calls[0][0].data).toEqual(JSON.stringify(expected));
 
     try {
