@@ -60,7 +60,7 @@ exports.handler = (event, context, callback) => {
 			let params = {
 				stateMachineArn: process.env.STEP_FUNCTION_ARN,
 				input: JSON.stringify({'body':JSON.stringify({"tag":tag})}),
-				name: crypto.createHash('md5').update(JSON.stringify(tag)).digest("hex") // we now have idempotent executions // TODO ensure this occurs before the text is sent or decide to get rid of this line
+				// name: crypto.createHash('md5').update(JSON.stringify(tag)).digest("hex") // we now have idempotent executions // TODO ensure this occurs before the text is sent or decide to get rid of this line
 			};
 			console.log("Starting step function...");
 			stepfunctions.startExecution(params, function(err, data) {
