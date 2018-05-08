@@ -79,7 +79,7 @@ deploy:
       - CALLBACK_TEXT_URL=$AWS_LAMBDA_ENV_CALLBACK_TEXT_URL
       - STEP_FUNCTION_ARN=$AWS_LAMBDA_ENV_STEP_FUNCTION_ARN
     on:
-      branch: modular_lambda
+      branch: master
   - provider: lambda
     function_name: "ContextCallV2Call"
     region: "us-west-2"
@@ -97,7 +97,7 @@ deploy:
       - USER_ID=$AWS_LAMBDA_ENV_USER_ID
       - CALLBACK_TEXT_URL=$AWS_LAMBDA_ENV_CALLBACK_TEXT_URL
     on:
-      branch: modular_lambda
+      branch: master
   - provider: lambda
     function_name: "ContextCallV2Orders"
     region: "us-west-2"
@@ -110,7 +110,7 @@ deploy:
     environment_variables:
       - SECRET=$AWS_LAMBDA_ENV_SECRET
     on:
-      branch: modular_lambda
+      branch: master
 after_deploy:
   - rm ${TRAVIS_BUILD_DIR}/server/text/context_call_v2_text.zip
   - rm ${TRAVIS_BUILD_DIR}/server/call/context_call_v2_call.zip
