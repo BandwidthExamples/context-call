@@ -32,39 +32,15 @@ afterEach(() => {
   delete process.env.SECRET;
 });
 
-test('test runs', () => {
-  expect(true);
-});
-
-test('doesn\'t run while waiting', () => {
-  const tag = JSON.stringify({
-    secret: 'bad-secret',
-    request: 'call',
-    companyNumber: '+12345550100',
-    customerNumber: '+12345550101'
-  });
-  const eventBody = JSON.stringify({
-    deliveryState: 'waiting',
-    tag: tag,
-    callId: 'test-call-id'
-  });
-  const event = {
-    body: eventBody
-  };
-  handler(event, {}, (err, res) => {
-    expect(err).toBeNull();
-    expect(res).not.toBeNull();
-    expect(res.code).toBe(200);
-    expect(res.message).not.toBeNull();
-  });
-});
-
 test('is denied due to an invalid secret', () => {
   const tag = JSON.stringify({
     secret: 'bad-secret',
-    request: 'call',
+    request: 'call_customer',
     companyNumber: '+12345550100',
-    customerNumber: '+12345550101'
+    customerNumber: '+12345550101',
+    waitType: 'seconds',
+    waitValue: '30',
+    message: 'This is a test'
   });
   const eventBody = JSON.stringify({
     deliveryState: 'delivered',
@@ -82,12 +58,40 @@ test('is denied due to an invalid secret', () => {
   });
 });
 
-test('calls the given number', () => {
+test('is denied due to an invalid tag', () => {
   const tag = JSON.stringify({
     secret: 'test-secret',
-    request: 'call',
+    request: 'call_customer',
+    customerNumber: '+12345550101',
+    waitType: 'seconds',
+    waitValue: '30',
+    message: 'This is a test'
+  });
+  const eventBody = JSON.stringify({
+    deliveryState: 'delivered',
+    tag: tag,
+    callId: 'test-call-id'
+  });
+  const event = {
+    body: eventBody
+  };
+  handler(event, {}, (err, res) => {
+    expect(err).toBeNull();
+    expect(res).not.toBeNull();
+    expect(res.code).toBe(401);
+    expect(res.message).not.toBeNull();
+  });
+});
+
+test('calls the company number', () => {
+  const tag = JSON.stringify({
+    secret: 'test-secret',
+    request: 'call_company',
     companyNumber: '+12345550100',
-    customerNumber: '+12345550101'
+    customerNumber: '+12345550101',
+    waitType: 'seconds',
+    waitValue: '30',
+    message: 'This is a test'
   });
   const eventBody = JSON.stringify({
     deliveryState: 'delivered',
@@ -108,21 +112,55 @@ test('calls the given number', () => {
 
     expect(data.tag).not.toBeNull();
     const tag = JSON.parse(data.tag);
-    expect(tag.request).toBe('call');
+    expect(tag.request).toBe('ensure_company_answer');
     expect(tag.customerNumber).toBe('+12345550101');
+  });
+});
+
+test('bridges the given calls', () => {
+  const tag = JSON.stringify({
+    secret: 'test-secret',
+    request: 'call_customer',
+    companyNumber: '+12345550100',
+    customerNumber: '+12345550101',
+    waitType: 'seconds',
+    waitValue: '30',
+    message: 'This is a test',
+    companyCallId: 'test-call-id'
+  });
+  const eventBody = JSON.stringify({
+    eventType: 'answer',
+    tag: tag,
+    callId: 'test-call-id2',
+  });
+  const event = {
+    body: eventBody
+  };
+  handler(event, {}, (err, res) => {
+    expect(err).toBeNull();
+    expect(res).not.toBeNull();
+    expect(res.type).toBe('bridges');
+
+    expect(data.tag).not.toBeNull();
+    const tag = JSON.parse(data.tag);
+    expect(tag.companyCallId).toBe('test-call-id');
   });
 });
 
 test('calls the customer number', () => {
   const tag = JSON.stringify({
     secret: 'test-secret',
-    request: 'call',
-    customerNumber: '+12345550101'
+    request: 'call_customer',
+    companyNumber: '+12345550100',
+    customerNumber: '+12345550101',
+    waitType: 'seconds',
+    waitValue: '30',
+    message: 'This is a test'
   });
   const eventBody = JSON.stringify({
-    deliveryState: 'delivered',
+    eventType: 'answer',
     tag: tag,
-    callId: 'test-call-id'
+    callId: 'test-call-id-2'
   });
   const event = {
     body: eventBody
@@ -138,20 +176,25 @@ test('calls the customer number', () => {
 
     expect(data.tag).not.toBeNull();
     const tag = JSON.parse(data.tag);
-    expect(tag.request).toBe('bridgeCalls');
+    expect(tag.request).toBe('ensure_customer_answer');
   });
 });
 
-test('bridges the given numbers', () => {
+test('bridges the given calls', () => {
   const tag = JSON.stringify({
     secret: 'test-secret',
-    request: 'bridgeCalls',
-    customerCallId: 'test-customer-call-id'
+    request: 'call_customer',
+    companyNumber: '+12345550100',
+    customerNumber: '+12345550101',
+    waitType: 'seconds',
+    waitValue: '30',
+    message: 'This is a test',
+    companyCallId: 'test-call-id'
   });
   const eventBody = JSON.stringify({
-    deliveryState: 'delivered',
+    eventType: 'answer',
     tag: tag,
-    callId: 'test-call-id',
+    callId: 'test-call-id2',
   });
   const event = {
     body: eventBody
