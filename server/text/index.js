@@ -57,9 +57,11 @@ exports.handler = (event, context, callback) => {
 			console.log("Creating Step Function...");
 			let stepfunctions = new AWS.StepFunctions();
 			console.log("Generating MD5...");
+			let input = JSON.stringify(tag);
+			input.body = JSON.stringify({"tag":tag});
 			let params = {
 				stateMachineArn: process.env.STEP_FUNCTION_ARN,
-				input: JSON.stringify({'body':JSON.stringify({"tag":tag}), ...tag}),
+				input: JSON.stringify(input),
 				// name: crypto.createHash('md5').update(JSON.stringify(tag)).digest("hex") // we now have idempotent executions // TODO ensure this occurs before the text is sent or decide to get rid of this line
 			};
 			console.log("Starting step function...");
