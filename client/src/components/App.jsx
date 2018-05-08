@@ -130,8 +130,8 @@ class App extends React.Component {
     console.log('POST...');
     $.ajax({
       type: 'POST',
-      url: 'https://aed46gt651.execute-api.us-west-2.amazonaws.com/prod/ContextCallV1',
-      data: JSON.stringify(data),
+      url: 'https://9edx1rvqe8.execute-api.us-west-2.amazonaws.com/dev/ContextCallV2Text',
+      data: JSON.stringify({"tag":JSON.stringify(data)}),
       dataType: 'json',
       crossDomain: true,
       success: (res) => {

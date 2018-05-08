@@ -40,6 +40,10 @@ before_deploy:
   - cd ${TRAVIS_BUILD_DIR}/server/local_dependencies/simple-bandwidth-api
   - rm -rf node_modules
   - npm install --production
+  # Install aws-lambda-tag-parser dependencies for later use
+  - cd ${TRAVIS_BUILD_DIR}/server/local_dependencies/aws-lambda-tag-parser
+  - rm -rf node_modules
+  - npm install --production
   # create text zip
   - cd ${TRAVIS_BUILD_DIR}/server/text
   - rm -rf node_modules
@@ -72,7 +76,8 @@ deploy:
       - API_TOKEN=$AWS_LAMBDA_ENV_API_TOKEN
       - PHONE_NUMBER=$AWS_LAMBDA_ENV_PHONE_NUMBER
       - USER_ID=$AWS_LAMBDA_ENV_USER_ID
-      - CALLBACK_WAIT_URL=$AWS_LAMBDA_ENV_CALLBACK_WAIT_URL
+      - CALLBACK_TEXT_URL=$AWS_LAMBDA_ENV_CALLBACK_TEXT_URL
+      - STEP_FUNCTION_ARN=$AWS_LAMBDA_ENV_STEP_FUNCTION_ARN
     on:
       branch: modular_lambda
   - provider: lambda
@@ -90,7 +95,7 @@ deploy:
       - API_TOKEN=$AWS_LAMBDA_ENV_API_TOKEN
       - PHONE_NUMBER=$AWS_LAMBDA_ENV_PHONE_NUMBER
       - USER_ID=$AWS_LAMBDA_ENV_USER_ID
-      - CALLBACK_WAIT_URL=$AWS_LAMBDA_ENV_CALLBACK_WAIT_URL
+      - CALLBACK_TEXT_URL=$AWS_LAMBDA_ENV_CALLBACK_TEXT_URL
     on:
       branch: modular_lambda
   - provider: lambda

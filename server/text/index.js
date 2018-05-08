@@ -1,6 +1,6 @@
 'use strict';
 
-function send_sms(customerNumber, message, companyNumber, waitType, waitValue, callback) {
+function send_sms(tag, callback) {
 	// TODO NLP; save to DynamoDB
 	// customerNumber: 10 digit number to text
 	// message: the text message itself
@@ -11,11 +11,11 @@ function send_sms(customerNumber, message, companyNumber, waitType, waitValue, c
 
 	const postData = JSON.stringify({
 		from: process.env.PHONE_NUMBER,
-		to: customerNumber,
-		text: message,
+		to: tag.customerNumber,
+		text: tag.message,
 		receiptRequested: 'all', // request SMS delivery reciept
-		callbackUrl: process.env.CALLBACK_WAIT_URL, // the URL of our API endpoint that will handle waiting and then calling
-		tag: JSON.stringify({'waitType': waitType, 'waitValue': waitValue, 'companyNumber': companyNumber, 'customerNumber': customerNumber, 'secret': process.env.SECRET, 'request': 'call'}) // send the wait types and wait values between texting and calling as well as both numbers to call
+		callbackUrl: process.env.CALLBACK_TEXT_URL, // the URL of our API endpoint that will handle waiting and then calling
+		tag: JSON.stringify(tag) // send the wait types and wait values between texting and calling as well as both numbers to call
 	});
 
 	bandwidthAPI.post('messages', postData, callback);
@@ -23,20 +23,55 @@ function send_sms(customerNumber, message, companyNumber, waitType, waitValue, c
 
 exports.handler = (event, context, callback) => {
 	const httpResponse = require('aws-api-gateway-return');
-	
+	const tagParser = require('aws-lambda-tag-parser');
+
 	const body = JSON.parse(event.body);
-	if(!body.secret || body.secret != process.env.SECRET) {
-		callback(null, httpResponse.create(401, "invalid/unspecified secret"));
+
+	let tag = tagParser.parse(body, callback);
+	if (!tag) {
 		return;
 	}
 
-	switch(body.request) {
-		case 'ping':
-			callback(null, httpResponse.create(200, "ready"));
-			return;
+	switch(tag.request) {
+		case 'message_customer':
+			tag.request = 'ensure_message_delivery';
+			send_sms(tag, callback);
 			break;
-		case 'textCustomer':
-			send_sms(body.customerNumber, body.message, body.companyNumber, body.waitType, body.waitValue, callback);
+		case 'ensure_message_delivery':
+			if(!('deliveryState' in body)) {
+				// this shouldn't happen unless something weird is going on
+				callback(null, httpResponse.create(400, "no delivery state"));
+				return;
+			}
+			if (body.deliveryState != 'delivered') {
+				// not delivered yet, so keep waiting
+				callback(null, httpResponse.create(200, "okay"));
+				return;
+			}
+			console.log("Requiring AWS SDK...");
+			tag.request = 'call_company';
+
+			const AWS = require('aws-sdk');
+			console.log("Requiring crypto...");
+			const crypto = require('crypto');
+			console.log("Creating Step Function...");
+			let stepfunctions = new AWS.StepFunctions();
+			console.log("Generating MD5...");
+			let input = tag;
+			input.body = JSON.stringify({"tag":JSON.stringify(tag)});
+			let params = {
+				stateMachineArn: process.env.STEP_FUNCTION_ARN,
+				input: JSON.stringify(input),
+				// name: crypto.createHash('md5').update(JSON.stringify(tag)).digest("hex") // we now have idempotent executions // TODO ensure this occurs before the text is sent or decide to get rid of this line
+			};
+			console.log("Starting step function...");
+			stepfunctions.startExecution(params, function(err, data) {
+				if (err)	callback(null, httpResponse.create(500, "Internal Server Error (" + err + "):\n" + err.stack)); // an error occurred
+				else		callback(null, httpResponse.create(200, "okay")); // successful response
+			});
+			break;
+		default:
+			callback(null, httpResponse.create(400, "invalid request"));
 			break;
 	}
 };
