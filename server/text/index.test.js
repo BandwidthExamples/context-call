@@ -29,11 +29,13 @@ beforeEach(() => {
       }
     };
   });
-  
+
   jest.mock('aws-sdk', () => {
     return {
-      StepFunctions: () => {
-      	return mockStartExecution;
+      StepFunctions: class StepFunctions {
+        constructor() {
+          this.startExecution = mockStartExecution;
+        }
       }
     };
   });
@@ -45,11 +47,7 @@ afterEach(() => {
   delete process.env.SECRET;
 });
 
-test('test runs', () => {
-  expect(true);
-});
-
-test('is denied due to an invalid secret', () => {
+test('is denied due to an invalid secret', done => {
   const tag = JSON.stringify({
     secret: 'bad-secret',
     request: 'message_customer',
@@ -72,10 +70,11 @@ test('is denied due to an invalid secret', () => {
     expect(res).not.toBeNull();
     expect(res.code).toBe(401);
     expect(res.message).not.toBeNull();
+    done();
   });
 });
 
-test('texts the given number', () => {
+test('texts the given number', done => {
   const tag = JSON.stringify({
     secret: 'test-secret',
     request: 'message_customer',
@@ -89,6 +88,9 @@ test('texts the given number', () => {
   const eventBody = JSON.stringify({
     tag: tag
   });
+  const event = {
+    body: eventBody
+  };
   handler(event, {}, (err, res) => {
     expect(err).toBeNull();
     expect(res).not.toBeNull();
@@ -109,10 +111,11 @@ test('texts the given number', () => {
     expect(tag.customerNumber).toBe('test-customer-number');
     expect(tag.secret).toBe('test-secret');
     expect(tag.request).toBe('call');
+    done();
   });
 });
 
-test('ensures message delivery', () => {
+test('ensures message delivery', done => {
   const tag = JSON.stringify({
     secret: 'test-secret',
     request: 'ensure_message_delivery',
@@ -127,11 +130,15 @@ test('ensures message delivery', () => {
     deliveryState: 'delivered',
     tag: tag
   });
+  const event = {
+    body: eventBody
+  };
   handler(event, {}, (err, res) => {
     expect(err).toBeNull();
     expect(res).not.toBeNull();
 
     expect(mockStartExecution.mock.params[0][0]).not.toBeNull();
     expect(mockStartExecution.mock.params[0][1]).not.toBeNull();
+    done();
   });
 });
