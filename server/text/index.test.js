@@ -4,14 +4,21 @@ const mockPost = jest.fn((type, data, callback) => {
   callback(null, {});
 });
 
+const AWS = require("aws-sdk");
 const mockStartExecution = jest.fn((params, err_function) => {
 
 });
 
+const mockStepFunctions = jest.fn(() => ({
+  startExecution: mockStartExecution
+}));
+
+AWS.StepFunctions = mockStepFunctions;
+
 beforeEach(() => {
   process.env.SECRET = 'test-secret';
   process.env.PHONE_NUMBER = 'test-bandwidth-phone';
-  process.env.CALLBACK_WAIT_URL = 'test-wait-url';
+  process.env.CALLBACK_TEXT_URL = 'test-wait-url';
 
   jest.mock('simple-bandwidth-api', () => {
     return {
@@ -29,14 +36,10 @@ beforeEach(() => {
       }
     };
   });
-
+  
   jest.mock('aws-sdk', () => {
     return {
-      StepFunctions: class StepFunctions {
-        constructor() {
-          this.startExecution = mockStartExecution;
-        }
-      }
+      StepFunctions: mockStepFunctions
     };
   });
 
@@ -47,7 +50,11 @@ afterEach(() => {
   delete process.env.SECRET;
 });
 
-test('is denied due to an invalid secret', done => {
+test('test runs', () => {
+  expect(true);
+});
+
+test('is denied due to an invalid secret', () => {
   const tag = JSON.stringify({
     secret: 'bad-secret',
     request: 'message_customer',
@@ -55,7 +62,7 @@ test('is denied due to an invalid secret', done => {
     customerNumber: '+12345550101',
     waitType: 'seconds',
     waitValue: '30',
-    message: 'This is a test',
+    message: 'test-message',
     companyCallId: 'test-call-id'
   });
   const eventBody = JSON.stringify({
@@ -70,11 +77,10 @@ test('is denied due to an invalid secret', done => {
     expect(res).not.toBeNull();
     expect(res.code).toBe(401);
     expect(res.message).not.toBeNull();
-    done();
   });
 });
 
-test('texts the given number', done => {
+test('texts the given number', () => {
   const tag = JSON.stringify({
     secret: 'test-secret',
     request: 'message_customer',
@@ -82,7 +88,7 @@ test('texts the given number', done => {
     customerNumber: '+12345550101',
     waitType: 'seconds',
     waitValue: '30',
-    message: 'This is a test',
+    message: 'test-message',
     companyCallId: 'test-call-id'
   });
   const eventBody = JSON.stringify({
@@ -99,23 +105,22 @@ test('texts the given number', done => {
 
     const postData = JSON.parse(mockPost.mock.calls[0][1]);
     expect(postData.from).toBe('test-bandwidth-phone');
-    expect(postData.to).toBe('test-customer-number');
+    expect(postData.to).toBe('+12345550101');
     expect(postData.text).toBe('test-message');
     expect(postData.receiptRequested).toBe('all');
     expect(postData.callbackUrl).toBe('test-wait-url');
 
     const tag = JSON.parse(postData.tag);
-    expect(tag.waitType).toBe('test-wait-type');
-    expect(tag.waitValue).toBe('test-wait-value');
-    expect(tag.companyNumber).toBe('test-company-number');
-    expect(tag.customerNumber).toBe('test-customer-number');
+    expect(tag.waitType).toBe('seconds');
+    expect(tag.waitValue).toBe('30');
+    expect(tag.companyNumber).toBe('+12345550100');
+    expect(tag.customerNumber).toBe('+12345550101');
     expect(tag.secret).toBe('test-secret');
-    expect(tag.request).toBe('call');
-    done();
+    expect(tag.request).toBe('ensure_message_delivery');
   });
 });
 
-test('ensures message delivery', done => {
+test('ensures message delivery', () => {
   const tag = JSON.stringify({
     secret: 'test-secret',
     request: 'ensure_message_delivery',
@@ -123,7 +128,7 @@ test('ensures message delivery', done => {
     customerNumber: '+12345550101',
     waitType: 'seconds',
     waitValue: '30',
-    message: 'This is a test',
+    message: 'test-message',
     companyCallId: 'test-call-id'
   });
   const eventBody = JSON.stringify({
@@ -136,9 +141,18 @@ test('ensures message delivery', done => {
   handler(event, {}, (err, res) => {
     expect(err).toBeNull();
     expect(res).not.toBeNull();
+    
+    const tag = JSON.parse(mockStartExecution.mock.params[0][0]);
+    const err_function = JSON.parse(mockStartExecution.mock.params[0][1]);
 
-    expect(mockStartExecution.mock.params[0][0]).not.toBeNull();
-    expect(mockStartExecution.mock.params[0][1]).not.toBeNull();
-    done();
+    expect(tag).not.toBeNull();
+    expect(err_function).not.toBeNull();
+
+    expect(tag.waitType).toBe('seconds');
+    expect(tag.waitValue).toBe('30');
+    expect(tag.companyNumber).toBe('+12345550100');
+    expect(tag.customerNumber).toBe('+12345550101');
+    expect(tag.secret).toBe('test-secret');
+    expect(tag.request).toBe('ensure_message_delivery');
   });
 });
