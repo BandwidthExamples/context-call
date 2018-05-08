@@ -4,9 +4,9 @@ const mockPost = jest.fn((type, data, callback) => {
   callback(null, {});
 });
 
-const AWS = require("aws-sdk");
+const AWS = require('aws-sdk');
 const mockStartExecution = jest.fn((params, err_function) => {
-
+  err_function(null, {});
 });
 
 const mockStepFunctions = jest.fn(() => ({
@@ -36,7 +36,7 @@ beforeEach(() => {
       }
     };
   });
-  
+
   jest.mock('aws-sdk', () => {
     return {
       StepFunctions: mockStepFunctions
@@ -50,11 +50,7 @@ afterEach(() => {
   delete process.env.SECRET;
 });
 
-test('test runs', () => {
-  expect(true);
-});
-
-test('is denied due to an invalid secret', () => {
+test('is denied due to an invalid secret', done => {
   const tag = JSON.stringify({
     secret: 'bad-secret',
     request: 'message_customer',
@@ -76,10 +72,11 @@ test('is denied due to an invalid secret', () => {
     expect(res).not.toBeNull();
     expect(res.code).toBe(401);
     expect(res.message).not.toBeNull();
+    done();
   });
 });
 
-test('texts the given number', () => {
+test('texts the given number', done => {
   const tag = JSON.stringify({
     secret: 'test-secret',
     request: 'message_customer',
@@ -115,10 +112,11 @@ test('texts the given number', () => {
     expect(tag.customerNumber).toBe('+12345550101');
     expect(tag.secret).toBe('test-secret');
     expect(tag.request).toBe('ensure_message_delivery');
+    done();
   });
 });
 
-test('ensures message delivery', () => {
+test('ensures message delivery', done => {
   const tag = JSON.stringify({
     secret: 'test-secret',
     request: 'ensure_message_delivery',
@@ -139,8 +137,8 @@ test('ensures message delivery', () => {
     expect(err).toBeNull();
     expect(res).not.toBeNull();
 
-    const tag = JSON.parse(mockStartExecution.mock.params[0][0]);
-    const err_function = JSON.parse(mockStartExecution.mock.params[0][1]);
+    const tag = JSON.parse(mockStartExecution.mock.calls[0][0].input);
+    const err_function = mockStartExecution.mock.calls[0][1];
 
     expect(tag).not.toBeNull();
     expect(err_function).not.toBeNull();
@@ -150,18 +148,19 @@ test('ensures message delivery', () => {
     expect(tag.companyNumber).toBe('+12345550100');
     expect(tag.customerNumber).toBe('+12345550101');
     expect(tag.secret).toBe('test-secret');
-    expect(tag.request).toBe('ensure_message_delivery');
+    expect(tag.request).toBe('call_company');
 
     handler(event, {}, (err, res) => {
-    expect(err).toBeNull();
-    expect(res).not.toBeNull();
-    expect(res.code).toBe(200);
-    expect(res.message).not.toBeNull();
-  });
+      expect(err).toBeNull();
+      expect(res).not.toBeNull();
+      expect(res.code).toBe(200);
+      expect(res.message).not.toBeNull();
+      done();
+    });
   });
 });
 
-test('returns 200 when message is waiting', () => {
+test('returns 200 when message is waiting', done => {
   const tag = JSON.stringify({
     secret: 'test-secret',
     request: 'ensure_message_delivery',
@@ -183,15 +182,16 @@ test('returns 200 when message is waiting', () => {
     expect(res).not.toBeNull();
 
     handler(event, {}, (err, res) => {
-    expect(err).toBeNull();
-    expect(res).not.toBeNull();
-    expect(res.code).toBe(200);
-    expect(res.message).not.toBeNull();
-  });
+      expect(err).toBeNull();
+      expect(res).not.toBeNull();
+      expect(res.code).toBe(200);
+      expect(res.message).not.toBeNull();
+      done();
+    });
   });
 });
 
-test('returns 400 when deliveryState is invalid', () => {
+test('returns 400 when deliveryState is invalid', done => {
   const tag = JSON.stringify({
     secret: 'test-secret',
     request: 'ensure_message_delivery',
@@ -212,15 +212,16 @@ test('returns 400 when deliveryState is invalid', () => {
     expect(res).not.toBeNull();
 
     handler(event, {}, (err, res) => {
-    expect(err).toBeNull();
-    expect(res).not.toBeNull();
-    expect(res.code).toBe(400);
-    expect(res.message).not.toBeNull();
-  });
+      expect(err).toBeNull();
+      expect(res).not.toBeNull();
+      expect(res.code).toBe(400);
+      expect(res.message).not.toBeNull();
+      done();
+    });
   });
 });
 
-test('returns 400 when request is invalid', () => {
+test('returns 400 when request is invalid', done => {
   const tag = JSON.stringify({
     secret: 'test-secret',
     request: 'bad-request-state',
@@ -242,10 +243,11 @@ test('returns 400 when request is invalid', () => {
     expect(res).not.toBeNull();
 
     handler(event, {}, (err, res) => {
-    expect(err).toBeNull();
-    expect(res).not.toBeNull();
-    expect(res.code).toBe(400);
-    expect(res.message).not.toBeNull();
+      expect(err).toBeNull();
+      expect(res).not.toBeNull();
+      expect(res.code).toBe(400);
+      expect(res.message).not.toBeNull();
+      done();
+    });
   });
-  });
-})
+});
