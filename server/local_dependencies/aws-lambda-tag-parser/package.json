@@ -11,5 +11,8 @@
     "lambda"
   ],
   "author": "Nick Ashley",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "aws-api-gateway-return": "file:../aws-api-gateway-return"
+  }
 }
