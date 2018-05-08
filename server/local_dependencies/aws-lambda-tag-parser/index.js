@@ -20,8 +20,15 @@ exports.parse = function(body, callback) {
 
 	const body_tag = JSON.parse(body.tag);
 	let tag = {};
-	for(let parameter of ['waitType', 'waitValue', 'companyNumber', 'customerNumber', 'secret', 'request', 'message']){
+	for(let parameter of ['request', 'waitType', 'waitValue', 'companyNumber', 'customerNumber', 'secret', 'message']){
 		if (!(parameter in body_tag)) {
+			if(parameter == 'request') {
+				// if request state is missing, set to what the client should send by default
+				tag.request = 'message_customer';
+				tag.waitType = 'seconds';
+				tag.waitValue = '60';
+				continue;
+			}
 			callback(null, httpResponse.create(400, "invalid tag (missing `" + parameter + "`)"));
 			return false;
 		} else {

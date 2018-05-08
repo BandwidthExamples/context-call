@@ -32,12 +32,6 @@ exports.handler = (event, context, callback) => {
 		return;
 	}
 
-	if (!('request' in tag)) {
-		tag.request = 'message_customer';
-		tag.waitType = 'seconds';
-		tag.waitValue = '60';
-	}
-
 	switch(tag.request) {
 		case 'message_customer':
 			tag.request = 'ensure_message_delivery';
