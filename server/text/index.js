@@ -52,11 +52,7 @@ exports.handler = (event, context, callback) => {
 			tag.request = 'call_company';
 
 			const AWS = require('aws-sdk');
-			console.log("Requiring crypto...");
-			const crypto = require('crypto');
-			console.log("Creating Step Function...");
 			let stepfunctions = new AWS.StepFunctions();
-			console.log("Generating MD5...");
 			let input = tag;
 			input.body = JSON.stringify({"tag":JSON.stringify(tag)});
 			let params = {
