@@ -1,14 +1,15 @@
 {
-  "name": "cmm-server",
+  "name": "cmm-orders",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "node-bandwidth":"^2.6.2"
+    "aws-api-gateway-return": "file:../local_dependencies/aws-api-gateway-return"
   },
   "scripts": {
     "test": "jest"
   },
   "devDependencies": {
+    "aws-sdk": "^2.224.1",
     "jest": "^22.4.0"
   }
 }

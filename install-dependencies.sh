@@ -1,11 +1,15 @@
 #!/usr/bin/env bash
 # install client dependencies
-cd ~/build/BandwidthExamples/context-call/client
+cd ${TRAVIS_BUILD_DIR}/client/
 npm install
 
 # install server dependencies
-cd ~/build/BandwidthExamples/context-call/server
-npm install node-bandwidth
+cd ${TRAVIS_BUILD_DIR}/server/text/
+npm install
 
-# restore initial working directory
-cd ~/build/BandwidthExamples/context-call/
+cd ${TRAVIS_BUILD_DIR}/server/call/
+npm install
+
+cd ${TRAVIS_BUILD_DIR}/server/orders/
+npm install
+

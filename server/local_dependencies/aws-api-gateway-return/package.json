@@ -1,0 +1,15 @@
+{
+  "name": "aws-api-gateway-return",
+  "version": "0.0.1",
+  "description": "A very simple way to return an HTTP status and message to AWS API Gateway from AWS Lambda",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [
+    "aws",
+    "lambda"
+  ],
+  "author": "Nick Ashley",
+  "license": "ISC"
+}

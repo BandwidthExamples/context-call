@@ -4,20 +4,115 @@ node_js:
 cache:
   directories:
     #Cache Client npm install files
-    - ~/build/BandwidthExamples/context-call/client/.npm
-    - ~/build/BandwidthExamples/context-call/client/node-modules
+    - ${TRAVIS_BUILD_DIR}/client/.npm
+    - ${TRAVIS_BUILD_DIR}/client/node-modules
 
     #Cache Server npm install files
-    - ~/build/BandwidthExamples/context-call/server/.npm
-    - ~/build/BandwidthExamples/context-call/server/node-modules
+    - ${TRAVIS_BUILD_DIR}/server/text/.npm
+    - ${TRAVIS_BUILD_DIR}/server/text/node-modules
+    - ${TRAVIS_BUILD_DIR}/server/call/.npm
+    - ${TRAVIS_BUILD_DIR}/server/call/node-modules
+    - ${TRAVIS_BUILD_DIR}/server/orders/.npm
+    - ${TRAVIS_BUILD_DIR}/server/orders/node-modules
 
-install: ./install-dependencies.sh
+install: ${TRAVIS_BUILD_DIR}/install-dependencies.sh
 script:
   #Run jest unit tests on client
-  - cd ~/build/BandwidthExamples/context-call/client
-  - jest
+  - cd ${TRAVIS_BUILD_DIR}/client
+  - npm run test
   #Run cypress tests on client
 #  - npm run cypress:run
-  #Run jest unit tests on server
-  - cd ~/build/BandwidthExamples/context-call/server
-  - jest
+  # Run tests for the text version of our API
+  - cd ${TRAVIS_BUILD_DIR}/server/text/
+  - npm run test
+  # Run tests for the call version of our API
+  - cd ${TRAVIS_BUILD_DIR}/server/call/
+  - npm run test
+  # Run tests for getting orders from the database
+  - cd ${TRAVIS_BUILD_DIR}/server/orders/
+  - npm run test
+before_deploy:
+  # Install aws-api-gateway-return dependencies for later use
+  - cd ${TRAVIS_BUILD_DIR}/server/local_dependencies/aws-api-gateway-return
+  - rm -rf node_modules
+  - npm install --production
+  # Install simple-bandwidth-api dependencies for later use
+  - cd ${TRAVIS_BUILD_DIR}/server/local_dependencies/simple-bandwidth-api
+  - rm -rf node_modules
+  - npm install --production
+  # Install aws-lambda-tag-parser dependencies for later use
+  - cd ${TRAVIS_BUILD_DIR}/server/local_dependencies/aws-lambda-tag-parser
+  - rm -rf node_modules
+  - npm install --production
+  # create text zip
+  - cd ${TRAVIS_BUILD_DIR}/server/text
+  - rm -rf node_modules
+  - npm install --production # for lambda zip to not be bloated with dev dependencies
+  - zip context_call_v2_text -r node_modules/ index.js
+  # create call zip
+  - cd ${TRAVIS_BUILD_DIR}/server/call
+  - rm -rf node_modules
+  - npm install --production # for lambda zip to not be bloated with dev dependencies
+  - zip context_call_v2_call -r node_modules/ index.js
+  # create orders zip
+  - cd ${TRAVIS_BUILD_DIR}/server/orders
+  - rm -rf node_modules
+  - npm install --production
+  - zip context_call_v2_orders -r node_modules/ index.js
+#Deploy to lambda via dpl
+deploy:
+  - provider: lambda
+    function_name: "ContextCallV2Text"
+    region: "us-west-2"
+    role: "arn:aws:iam::957512267502:role/LambdaDeployment"
+    runtime: "nodejs6.10"
+    handler_name: "handler"
+    zip: "${TRAVIS_BUILD_DIR}/server/text/context_call_v2_text.zip"
+    access_key_id: $AWSACCESSKEY
+    secret_access_key: $SECRETACCESSKEY
+    environment_variables:
+      - SECRET=$AWS_LAMBDA_ENV_SECRET
+      - API_SECRET=$AWS_LAMBDA_ENV_API_SECRET
+      - API_TOKEN=$AWS_LAMBDA_ENV_API_TOKEN
+      - PHONE_NUMBER=$AWS_LAMBDA_ENV_PHONE_NUMBER
+      - USER_ID=$AWS_LAMBDA_ENV_USER_ID
+      - CALLBACK_TEXT_URL=$AWS_LAMBDA_ENV_CALLBACK_TEXT_URL
+      - STEP_FUNCTION_ARN=$AWS_LAMBDA_ENV_STEP_FUNCTION_ARN
+    on:
+      branch: modular_lambda
+  - provider: lambda
+    function_name: "ContextCallV2Call"
+    region: "us-west-2"
+    role: "arn:aws:iam::957512267502:role/LambdaDeployment"
+    runtime: "nodejs6.10"
+    handler_name: "handler"
+    zip: "${TRAVIS_BUILD_DIR}/server/call/context_call_v2_call.zip"
+    access_key_id: $AWSACCESSKEY
+    secret_access_key: $SECRETACCESSKEY
+    environment_variables:
+      - SECRET=$AWS_LAMBDA_ENV_SECRET
+      - API_SECRET=$AWS_LAMBDA_ENV_API_SECRET
+      - API_TOKEN=$AWS_LAMBDA_ENV_API_TOKEN
+      - PHONE_NUMBER=$AWS_LAMBDA_ENV_PHONE_NUMBER
+      - USER_ID=$AWS_LAMBDA_ENV_USER_ID
+      - CALLBACK_TEXT_URL=$AWS_LAMBDA_ENV_CALLBACK_TEXT_URL
+    on:
+      branch: modular_lambda
+  - provider: lambda
+    function_name: "ContextCallV2Orders"
+    region: "us-west-2"
+    role: "arn:aws:iam::957512267502:role/LambdaDeployment"
+    runtime: "nodejs6.10"
+    handler_name: "handler"
+    zip: "${TRAVIS_BUILD_DIR}/server/orders/context_call_v2_orders.zip"
+    access_key_id: $AWSACCESSKEY
+    secret_access_key: $SECRETACCESSKEY
+    environment_variables:
+      - SECRET=$AWS_LAMBDA_ENV_SECRET
+    on:
+      branch: modular_lambda
+after_deploy:
+  - rm ${TRAVIS_BUILD_DIR}/server/text/context_call_v2_text.zip
+  - rm ${TRAVIS_BUILD_DIR}/server/call/context_call_v2_call.zip
+  - rm ${TRAVIS_BUILD_DIR}/server/orders/context_call_v2_orders.zip
+
