@@ -29,8 +29,6 @@ class App extends React.Component {
       customerNumber: '',
       message: '',
       secret: '',
-      waitType: 'seconds',
-      waitValue: '60'
     };
 
     const defaultData = [
@@ -237,36 +235,6 @@ class App extends React.Component {
                       value={this.state.secret}
                       onChange={this.onSecretChange}
                       placeholder="Secret"
-                    />
-                  </Flow.Item>
-                </Flow.Row>
-                <Flow.Row>
-                  <Flow.Item>
-                    <Label>
-                      Secret
-                    </Label>
-                  </Flow.Item>
-                  <Flow.Item>
-                    <Input
-                      id="waitType"
-                      type="text"
-                      value={this.state.waitType}
-                      placeholder="Wait Type"
-                    />
-                  </Flow.Item>
-                </Flow.Row>
-                <Flow.Row>
-                  <Flow.Item>
-                    <Label>
-                      Secret
-                    </Label>
-                  </Flow.Item>
-                  <Flow.Item>
-                    <Input
-                      id="waitValue"
-                      type="number"
-                      value={this.state.waitValue}
-                      placeholder="Number of seconds or a timestamp, depending on type"
                     />
                   </Flow.Item>
                 </Flow.Row>
