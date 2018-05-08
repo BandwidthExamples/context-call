@@ -62,8 +62,7 @@ test('is denied due to an invalid secret', () => {
     customerNumber: '+12345550101',
     waitType: 'seconds',
     waitValue: '30',
-    message: 'test-message',
-    companyCallId: 'test-call-id'
+    message: 'test-message'
   });
   const eventBody = JSON.stringify({
     deliveryState: 'delivered',
@@ -88,8 +87,7 @@ test('texts the given number', () => {
     customerNumber: '+12345550101',
     waitType: 'seconds',
     waitValue: '30',
-    message: 'test-message',
-    companyCallId: 'test-call-id'
+    message: 'test-message'
   });
   const eventBody = JSON.stringify({
     tag: tag
@@ -128,8 +126,7 @@ test('ensures message delivery', () => {
     customerNumber: '+12345550101',
     waitType: 'seconds',
     waitValue: '30',
-    message: 'test-message',
-    companyCallId: 'test-call-id'
+    message: 'test-message'
   });
   const eventBody = JSON.stringify({
     deliveryState: 'delivered',
@@ -154,5 +151,101 @@ test('ensures message delivery', () => {
     expect(tag.customerNumber).toBe('+12345550101');
     expect(tag.secret).toBe('test-secret');
     expect(tag.request).toBe('ensure_message_delivery');
+
+    handler(event, {}, (err, res) => {
+    expect(err).toBeNull();
+    expect(res).not.toBeNull();
+    expect(res.code).toBe(200);
+    expect(res.message).not.toBeNull();
+  });
   });
 });
+
+test('returns 200 when message is waiting', () => {
+  const tag = JSON.stringify({
+    secret: 'test-secret',
+    request: 'ensure_message_delivery',
+    companyNumber: '+12345550100',
+    customerNumber: '+12345550101',
+    waitType: 'seconds',
+    waitValue: '30',
+    message: 'test-message'
+  });
+  const eventBody = JSON.stringify({
+    deliveryState: 'waiting',
+    tag: tag
+  });
+  const event = {
+    body: eventBody
+  };
+  handler(event, {}, (err, res) => {
+    expect(err).toBeNull();
+    expect(res).not.toBeNull();
+
+    handler(event, {}, (err, res) => {
+    expect(err).toBeNull();
+    expect(res).not.toBeNull();
+    expect(res.code).toBe(200);
+    expect(res.message).not.toBeNull();
+  });
+  });
+});
+
+test('returns 400 when deliveryState is invalid', () => {
+  const tag = JSON.stringify({
+    secret: 'test-secret',
+    request: 'ensure_message_delivery',
+    companyNumber: '+12345550100',
+    customerNumber: '+12345550101',
+    waitType: 'seconds',
+    waitValue: '30',
+    message: 'test-message'
+  });
+  const eventBody = JSON.stringify({
+    tag: tag
+  });
+  const event = {
+    body: eventBody
+  };
+  handler(event, {}, (err, res) => {
+    expect(err).toBeNull();
+    expect(res).not.toBeNull();
+
+    handler(event, {}, (err, res) => {
+    expect(err).toBeNull();
+    expect(res).not.toBeNull();
+    expect(res.code).toBe(400);
+    expect(res.message).not.toBeNull();
+  });
+  });
+});
+
+test('returns 400 when request is invalid', () => {
+  const tag = JSON.stringify({
+    secret: 'test-secret',
+    request: 'bad-request-state',
+    companyNumber: '+12345550100',
+    customerNumber: '+12345550101',
+    waitType: 'seconds',
+    waitValue: '30',
+    message: 'test-message'
+  });
+  const eventBody = JSON.stringify({
+    deliveryState: 'waiting',
+    tag: tag
+  });
+  const event = {
+    body: eventBody
+  };
+  handler(event, {}, (err, res) => {
+    expect(err).toBeNull();
+    expect(res).not.toBeNull();
+
+    handler(event, {}, (err, res) => {
+    expect(err).toBeNull();
+    expect(res).not.toBeNull();
+    expect(res.code).toBe(400);
+    expect(res.message).not.toBeNull();
+  });
+  });
+})
