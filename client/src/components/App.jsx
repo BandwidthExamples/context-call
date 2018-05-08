@@ -29,6 +29,8 @@ class App extends React.Component {
       customerNumber: '',
       message: '',
       secret: '',
+      waitType: 'seconds',
+      waitValue: '60'
     };
 
     const defaultData = [
@@ -130,8 +132,8 @@ class App extends React.Component {
     console.log('POST...');
     $.ajax({
       type: 'POST',
-      url: 'https://aed46gt651.execute-api.us-west-2.amazonaws.com/prod/ContextCallV1',
-      data: JSON.stringify(data),
+      url: 'https://9edx1rvqe8.execute-api.us-west-2.amazonaws.com/dev/ContextCallV2Text',
+      data: JSON.stringify({"tag":JSON.stringify(data)}),
       dataType: 'json',
       crossDomain: true,
       success: (res) => {
@@ -235,6 +237,36 @@ class App extends React.Component {
                       value={this.state.secret}
                       onChange={this.onSecretChange}
                       placeholder="Secret"
+                    />
+                  </Flow.Item>
+                </Flow.Row>
+                <Flow.Row>
+                  <Flow.Item>
+                    <Label>
+                      Secret
+                    </Label>
+                  </Flow.Item>
+                  <Flow.Item>
+                    <Input
+                      id="waitType"
+                      type="text"
+                      value={this.state.waitType}
+                      placeholder="Wait Type"
+                    />
+                  </Flow.Item>
+                </Flow.Row>
+                <Flow.Row>
+                  <Flow.Item>
+                    <Label>
+                      Secret
+                    </Label>
+                  </Flow.Item>
+                  <Flow.Item>
+                    <Input
+                      id="waitValue"
+                      type="number"
+                      value={this.state.waitValue}
+                      placeholder="Number of seconds or a timestamp, depending on type"
                     />
                   </Flow.Item>
                 </Flow.Row>
