@@ -4,6 +4,10 @@ const mockPost = jest.fn((type, data, callback) => {
   callback(null, {});
 });
 
+const mockStartExecution = jest.fn((params, err_function) => {
+
+});
+
 beforeEach(() => {
   process.env.SECRET = 'test-secret';
   process.env.PHONE_NUMBER = 'test-bandwidth-phone';
@@ -25,6 +29,14 @@ beforeEach(() => {
       }
     };
   });
+  
+  jest.mock('aws-sdk', () => {
+    return {
+      StepFunctions: () => {
+      	return mockStartExecution;
+      }
+    };
+  });
 
   handler = require('./index').handler;
 });
@@ -38,14 +50,19 @@ test('test runs', () => {
 });
 
 test('is denied due to an invalid secret', () => {
-  const eventBody = JSON.stringify({
+  const tag = JSON.stringify({
     secret: 'bad-secret',
-    request: 'textCustomer',
-    customerNumber: 'test-customer-number',
-    message: 'test-message',
-    companyNumber: 'test-company-number',
-    waitType: 'test-wait-type',
-    waitValue: 'test-wait-value'
+    request: 'message_customer',
+    companyNumber: '+12345550100',
+    customerNumber: '+12345550101',
+    waitType: 'seconds',
+    waitValue: '30',
+    message: 'This is a test',
+    companyCallId: 'test-call-id'
+  });
+  const eventBody = JSON.stringify({
+    deliveryState: 'delivered',
+    tag: tag
   });
   const event = {
     body: eventBody
@@ -58,35 +75,20 @@ test('is denied due to an invalid secret', () => {
   });
 });
 
-test('returns 200 on ping', () => {
-  const eventBody = JSON.stringify({
-    secret: 'test-secret',
-    request: 'ping'
-  });
-  const event = {
-    body: eventBody
-  };
-  handler(event, {}, (err, res) => {
-    expect(err).toBeNull();
-    expect(res).not.toBeNull();
-    expect(res.code).toBe(200);
-    expect(res.message).not.toBeNull();
-  });
-});
-
 test('texts the given number', () => {
-  const eventBody = JSON.stringify({
+  const tag = JSON.stringify({
     secret: 'test-secret',
-    request: 'textCustomer',
-    customerNumber: 'test-customer-number',
-    message: 'test-message',
-    companyNumber: 'test-company-number',
-    waitType: 'test-wait-type',
-    waitValue: 'test-wait-value'
+    request: 'message_customer',
+    companyNumber: '+12345550100',
+    customerNumber: '+12345550101',
+    waitType: 'seconds',
+    waitValue: '30',
+    message: 'This is a test',
+    companyCallId: 'test-call-id'
   });
-  const event = {
-    body: eventBody
-  };
+  const eventBody = JSON.stringify({
+    tag: tag
+  });
   handler(event, {}, (err, res) => {
     expect(err).toBeNull();
     expect(res).not.toBeNull();
@@ -107,5 +109,29 @@ test('texts the given number', () => {
     expect(tag.customerNumber).toBe('test-customer-number');
     expect(tag.secret).toBe('test-secret');
     expect(tag.request).toBe('call');
+  });
+});
+
+test('ensures message delivery', () => {
+  const tag = JSON.stringify({
+    secret: 'test-secret',
+    request: 'ensure_message_delivery',
+    companyNumber: '+12345550100',
+    customerNumber: '+12345550101',
+    waitType: 'seconds',
+    waitValue: '30',
+    message: 'This is a test',
+    companyCallId: 'test-call-id'
+  });
+  const eventBody = JSON.stringify({
+    deliveryState: 'delivered',
+    tag: tag
+  });
+  handler(event, {}, (err, res) => {
+    expect(err).toBeNull();
+    expect(res).not.toBeNull();
+
+    expect(mockStartExecution.mock.params[0][0]).not.toBeNull();
+    expect(mockStartExecution.mock.params[0][1]).not.toBeNull();
   });
 });
