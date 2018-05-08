@@ -29,8 +29,8 @@ exports.parse = function(body, callback) {
 			if(parameter == 'request') {
 				// if request state is missing, set to what the client should send by default
 				tag.request = 'message_customer';
-				tag.waitType = 'seconds';
-				tag.waitValue = '60';
+				body_tag.waitType = 'seconds';
+				body_tag.waitValue = '60';
 				continue;
 			}
 			callback(null, httpResponse.create(400, "invalid tag (missing `" + parameter + "`)"));
