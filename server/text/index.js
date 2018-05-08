@@ -57,8 +57,8 @@ exports.handler = (event, context, callback) => {
 			console.log("Creating Step Function...");
 			let stepfunctions = new AWS.StepFunctions();
 			console.log("Generating MD5...");
-			let input = JSON.stringify(tag);
-			input.body = JSON.stringify({"tag":tag});
+			let input = tag;
+			input.body = JSON.stringify({"body":JSON.stringify({"tag":JSON.stringify(tag)})});
 			let params = {
 				stateMachineArn: process.env.STEP_FUNCTION_ARN,
 				input: JSON.stringify(input),
