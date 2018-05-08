@@ -1,6 +1,6 @@
 'use strict';
 
-function callNumber(tag, callback) {
+function callNumber(number, tag, callback) {
 	// customerNumber: 10 digit number to call
 	// companyNumber: the number to call once the appropriate wait has elapsed
 	// callback: the callback function to return to
@@ -8,7 +8,7 @@ function callNumber(tag, callback) {
 
 	const postData = JSON.stringify({
 		from: process.env.PHONE_NUMBER,
-		to: tag.companyNumber,
+		to: number,
 		callbackUrl: process.env.CALLBACK_CALL_URL, // the URL of our API endpoint that will handle waiting and then calling
 		tag: JSON.stringify(tag)
 	});
