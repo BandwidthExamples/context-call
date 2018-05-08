@@ -20,6 +20,10 @@ exports.parse = function(body, callback) {
 
 	const body_tag = JSON.parse(body.tag);
 	let tag = {};
+	if('companyCallId' in body_tag) {
+		// Quick fix until the parser accepts an array of parameters to validate
+		tag.companyCallId = body_tag.companyCallId;
+	}
 	for(let parameter of ['request', 'waitType', 'waitValue', 'companyNumber', 'customerNumber', 'secret', 'message']){
 		if (!(parameter in body_tag)) {
 			if(parameter == 'request') {

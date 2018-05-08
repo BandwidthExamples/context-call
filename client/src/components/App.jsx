@@ -5,33 +5,19 @@ import {
   BandwidthThemeProvider,
   Flow,
   Form,
+  Icon,
   Input,
   Label,
-  Table,
-  Icon
+  Table
 } from '@bandwidth/shared-components';
 import CallButton from './call-button/CallButton';
+import {OrderService} from '../services/OrderService';
+import AddCustomerRow from './add-customer-row/AddCustomerRow';
 
 class App extends React.Component {
 
-  static isValidPhoneNumber(number) {
-    return number.match(new RegExp('^[+][0-9]{11}$'));
-  }
-
-  static isValidText(text) {
-    return text.length > 0;
-  }
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      companyNumber: '',
-      customerNumber: '',
-      message: '',
-      secret: '',
-    };
-
-    const defaultData = [
+  static get DEFAULT_DATA() {
+    return [
       {
         name: 'David Davidson I',
         order: 'ABCDEF–123',
@@ -69,17 +55,52 @@ class App extends React.Component {
         phone: '+19195550105'
       }
     ];
+  }
 
-    if (this.props.data) {
-      this.state.data = this.props.data;
+  static isValidPhoneNumber(number) {
+    return number.match(new RegExp('^[+][0-9]{11}$'));
+  }
+
+  static isValidText(text) {
+    return text.length > 0;
+  }
+
+  constructor(props) {
+    super(props);
+    this.loaded = false;
+    this.state = {
+      companyNumber: '',
+      customerNumber: '',
+      message: '',
+      secret: '',
+      data: []
+    };
+
+    if (props.data) {
+      this.state.data = props.data;
     } else {
-      this.state.data = defaultData;
+      this.state.data = App.DEFAULT_DATA;
     }
 
+    this.updateOrders = this.updateOrders.bind(this);
     this.onCompanyNumberChange = this.onCompanyNumberChange.bind(this);
     this.onTextMessageChange = this.onTextMessageChange.bind(this);
     this.onSecretChange = this.onSecretChange.bind(this);
+    this.onAddCustomer = this.onAddCustomer.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
+  }
+
+  updateOrders() {
+    OrderService.getOrders()
+      .then(data => {
+        this.setState({
+          ...this.state,
+          data: data
+        });
+      })
+      .catch(err => {
+        console.error(err);
+      });
   }
 
   onCompanyNumberChange(event) {
@@ -106,6 +127,30 @@ class App extends React.Component {
       ...this.state,
       secret: secret,
       validSecret: secret.length > 0
+    });
+  }
+
+  onAddCustomer(customer) {
+    console.log('POST...');
+    let url = 'https://dyrnp9j4tc.execute-api.us-west-2.amazonaws.com/beta/orders?';
+    url += `name=${customer.name}&`;
+    url += `orderId=${customer.orderId}&`;
+    url += `eta=${customer.eta}&`;
+    url += `phoneNumber=${customer.phoneNumber}&`;
+    url += `secret=${this.state.secret}`;
+    $.ajax({
+      type: 'POST',
+      url: url,
+      crossDomain: true,
+      success: (res) => {
+        console.log('Success: ' + JSON.stringify(res));
+        this.updateOrders();
+        alert('Added.');
+      },
+      error: (err) => {
+        console.log('Error: ' + JSON.stringify(err));
+        alert('Error.');
+      }
     });
   }
 
@@ -144,6 +189,11 @@ class App extends React.Component {
   }
 
   render() {
+    if (!this.loaded) {
+      this.loaded = true;
+      this.updateOrders();
+    }
+
     const headers = (
       <Table.Row>
         <Table.Header>Name</Table.Header>
@@ -172,13 +222,13 @@ class App extends React.Component {
           />
           {
             customer.sent ?
-            <Icon style={{'marginLeft': '10px'}} name="message"/> :
-            null
+              <Icon style={{'marginLeft': '10px'}} name="message"/> :
+              null
           }
           {
             customer.sent ?
-            <Icon name="checkmark"/> :
-            null
+              <Icon name="checkmark"/> :
+              null
           }
         </Table.Cell>
       </Table.Row>
@@ -243,6 +293,10 @@ class App extends React.Component {
 
             <Table id="customer-table" headers={headers}>
               {tableBody}
+              <AddCustomerRow
+                onSubmit={this.onAddCustomer}
+                disabled={!App.isValidText(this.state.secret)}
+              />
             </Table>
           </div>
         </BandwidthThemeProvider>
